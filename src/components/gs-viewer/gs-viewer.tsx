@@ -27,6 +27,7 @@ export const GSViewer = ({ plyPath }: GSViewerProps) => {
       const renderer = new THREE.WebGLRenderer({
         antialias: false,
         canvas,
+        alpha: true,
       });
       const camera = new THREE.PerspectiveCamera(75, 2, 0.1, 500);
 
