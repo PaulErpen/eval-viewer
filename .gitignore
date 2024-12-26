@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+public/ignatius-mcmc-1_427_672-no-downscale-with-sh-3_model.ply

@@ -7,6 +7,17 @@ export interface GSViewerProps {
   plyPath: String;
 }
 
+const resizeRendererToDisplaySize = (renderer: THREE.Renderer) => {
+  const canvas = renderer.domElement;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  const needResize = canvas.width !== width || canvas.height !== height;
+  if (needResize) {
+    renderer.setSize(width, height, false);
+  }
+  return needResize;
+};
+
 export const GSViewer = ({ plyPath }: GSViewerProps) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
 
@@ -23,7 +34,10 @@ export const GSViewer = ({ plyPath }: GSViewerProps) => {
       controls.enableDamping = true;
       camera.position.z = 2;
 
-      const gsViewer = new GaussianSplats3D.DropInViewer();
+      const gsViewer = new GaussianSplats3D.DropInViewer({
+        integerBasedSort: false,
+        sphericalHarmonicsDegree: 0,
+      });
       gsViewer.addSplatScenes([
         {
           path: plyPath,
@@ -33,6 +47,12 @@ export const GSViewer = ({ plyPath }: GSViewerProps) => {
 
       const render = () => {
         requestAnimationFrame(render);
+
+        if (resizeRendererToDisplaySize(renderer)) {
+          const canvas = renderer.domElement;
+          camera.aspect = canvas.clientWidth / canvas.clientHeight;
+          camera.updateProjectionMatrix();
+        }
 
         controls.update();
 
