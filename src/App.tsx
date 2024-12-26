@@ -1,35 +1,12 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { GSViewer } from "./components/gs-viewer/gs-viewer";
+import "./App.scss";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="app-container">
+      <GSViewer plyPath="/home/paul/TUWien/MasterThesisNerf/repos/GaussianSplats3D/tests/example_splats/ignatius-mcmc-2-downscale-2-uncapped_model.ply" />
+    </div>
+  );
+};
 
-export default App
+// <GSViewer plyPath="/home/paul/TUWien/MasterThesisNerf/repos/GaussianSplats3D/tests/example_splats/ignatius-3968-uncapped_model.ply" />
