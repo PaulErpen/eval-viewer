@@ -42,6 +42,7 @@ export const GSViewer = ({ plyPath }: GSViewerProps) => {
       gsViewer.addSplatScenes([
         {
           path: plyPath,
+          rotation: [1, 0.0, -0.0, 0.0],
         },
       ]);
       scene.add(gsViewer);

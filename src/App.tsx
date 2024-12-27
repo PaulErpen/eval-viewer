@@ -4,7 +4,7 @@ import "./App.scss";
 export const App = () => {
   return (
     <div className="app-container">
-      <GSViewer plyPath="lego_default_big.ply" />
+      <GSViewer plyPath="mcmc-vsc-truck-low-4_model.ply" />
     </div>
   );
 };
