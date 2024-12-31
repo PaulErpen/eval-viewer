@@ -1,7 +1,9 @@
+// @ts-ignore
 import * as GaussianSplats3D from "@mkkellogg/gaussian-splats-3d";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import * as THREE from "three";
 import "./gs-viewer.scss";
+// @ts-ignore
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export interface GSViewerProps {
   plyPath: String;
