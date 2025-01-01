@@ -1,27 +1,55 @@
 import { FirebaseApp } from "firebase/app";
 import {
-  httpsCallable,
-  getFunctions,
-  connectFunctionsEmulator,
-  Functions,
-} from "firebase/functions";
+  Firestore,
+  getFirestore,
+  collection,
+  orderBy,
+  getDocs,
+  query,
+  where,
+  limit,
+} from "firebase/firestore";
+import { Pair } from "../model/pair";
+import { Rating } from "../model/rating";
+import { pairConverter } from "./pair-converter";
 
-export class Repository {
+export interface Repository {
+  getNextPair: (getHighDetailModel: boolean) => Promise<Pair>;
+  ratePair: (pair: Pair, rating: Rating) => Promise<void>;
+}
+
+export class RepositoryImpl implements Repository {
   private app: FirebaseApp;
-  private functions: Functions;
+  // private functions: Functions;
+  private db: Firestore;
 
   constructor(app: FirebaseApp) {
     this.app = app;
-    this.functions = getFunctions(this.app);
-
-    // if (import.meta.env.MODE == "development") {
-    //   connectFunctionsEmulator(this.functions, "localhost", 5001);
-    // }
+    // this.functions = getFunctions(this.app);
+    this.db = getFirestore(this.app);
   }
 
-  callHelloWorld = () => {
-    const helloWorld = httpsCallable(this.functions, "helloWorld");
+  getNextPair = async (getHighDetailModel: boolean) => {
+    const pairs = collection(this.db, "pair").withConverter(pairConverter);
+    const highDetailConstraint = where("high_detail", "==", getHighDetailModel);
+    const orderByRatings = orderBy("n_ratings", "asc");
+    const limit1 = limit(1);
 
-    return helloWorld();
+    const pairQuery = query(
+      pairs,
+      highDetailConstraint,
+      orderByRatings,
+      limit1
+    );
+
+    const result = await getDocs(pairQuery);
+
+    if (result.docs.length == 0) {
+      throw new Error("No docs found, this should not happen!");
+    }
+
+    return result.docs[0].data();
   };
+
+  ratePair = async (pair: Pair, rating: Rating) => {};
 }
