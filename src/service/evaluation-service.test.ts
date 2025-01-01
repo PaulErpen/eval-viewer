@@ -16,7 +16,6 @@ const somePair: Pair = {
 const mockedRepository: Repository = {
   getNextPair: async (_getHighDetailModel: boolean) => somePair,
   ratePair: async (_pair: Pair, _rating: Rating) => {},
-
   reset: async () => {},
 };
 
@@ -26,6 +25,14 @@ describe("EvaluationService", () => {
   });
 
   describe("User id", () => {
+    test("Given no user id in the local storage, when initializing a new user id and retrieving, then it it must exist", () => {
+      const evalService = new EvaluationServiceImpl({ ...mockedRepository });
+
+      expect(evalService.getCurrentUserId()).toBeNull();
+      const userId = evalService.createUserId();
+      expect(evalService.getCurrentUserId()).toEqual(userId);
+    });
+
     test("Given no user id in the local storage, when retrieving the user id, then it must be null", () => {
       const evalService = new EvaluationServiceImpl({ ...mockedRepository });
 
