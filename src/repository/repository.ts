@@ -8,6 +8,9 @@ import {
   query,
   where,
   limit,
+  deleteDoc,
+  doc,
+  addDoc,
 } from "firebase/firestore";
 import { Pair } from "../model/pair";
 import { Rating } from "../model/rating";
@@ -16,6 +19,7 @@ import { pairConverter } from "./pair-converter";
 export interface Repository {
   getNextPair: (getHighDetailModel: boolean) => Promise<Pair>;
   ratePair: (pair: Pair, rating: Rating) => Promise<void>;
+  reset: () => Promise<void>;
 }
 
 export class RepositoryImpl implements Repository {
@@ -52,4 +56,29 @@ export class RepositoryImpl implements Repository {
   };
 
   ratePair = async (pair: Pair, rating: Rating) => {};
+
+  reset = async () => {
+    await this.clearCollection("pair");
+    await this.clearCollection("rating");
+
+    const pairs = collection(this.db, "pair").withConverter(pairConverter);
+    addDoc(pairs, {
+      id: "",
+      model1: "mcmc-vsc-truck-low-4_model.ply",
+      model2: "mcmc-vsc-truck-low-4_model.ply",
+      highDetail: false,
+      nRatings: 0,
+    });
+  };
+
+  private async clearCollection(collectionName: string) {
+    const pairs = collection(this.db, collectionName);
+    const pairSnapshots = await getDocs(pairs);
+
+    const deletePromises = pairSnapshots.docs.map((document) =>
+      deleteDoc(doc(this.db, collectionName, document.id))
+    );
+
+    await Promise.all(deletePromises);
+  }
 }
