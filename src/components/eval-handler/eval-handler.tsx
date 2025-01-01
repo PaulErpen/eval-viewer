@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { GSViewer } from "../gs-viewer/gs-viewer";
 import { EvaluationServiceImpl } from "../../service/evaluation-service";
 import { useFirebaseContext } from "../../context/firebase-context";
@@ -8,7 +8,6 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithRedirect,
-  getRedirectResult,
   User,
 } from "firebase/auth";
 
@@ -32,22 +31,16 @@ const signInWithGoogle = async () => {
   }
 };
 
-const getGoogleRedirectResult = async (
-  setUser: React.Dispatch<React.SetStateAction<User | null>>,
+const loadAuthInfo = async (
+  user: User,
   setIsOwner: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   try {
-    const userCredential = await getRedirectResult(auth);
-    if (userCredential != null) {
-      const tokenResult = await userCredential.user.getIdTokenResult();
+    const tokenResult = await user.getIdTokenResult();
 
-      setUser(userCredential.user);
-      setIsOwner(!!tokenResult.claims["owner"]);
-    } else {
-      console.log("Not logged in.");
-    }
+    setIsOwner(!!tokenResult.claims["owner"]);
   } catch (error) {
-    console.error("Error retrieving Google login results:", error);
+    console.error("Could get user token id for roles verification:", error);
   }
 };
 
@@ -69,7 +62,13 @@ export const EvalHandler = () => {
   }
 
   if (user == null) {
-    getGoogleRedirectResult(setUser, setIsOwner);
+    auth.onAuthStateChanged((user: User | null) => {
+      setUser(user);
+
+      if (user != null) {
+        loadAuthInfo(user, setIsOwner);
+      }
+    });
   }
 
   return (
