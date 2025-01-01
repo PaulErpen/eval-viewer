@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GSViewer } from "../gs-viewer/gs-viewer";
 import { EvaluationServiceImpl } from "../../service/evaluation-service";
 import { useFirebaseContext } from "../../context/firebase-context";
@@ -7,42 +7,48 @@ import { Pair } from "../../model/pair";
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   User,
 } from "firebase/auth";
 
-const setNextPair = async (
-  previousPair: Pair | null,
-  setPair: React.Dispatch<React.SetStateAction<Pair | null>>,
-  getNextPair: (previousPair: Pair | null) => Promise<Pair | null>
-) => {
-  const nextPair = await getNextPair(previousPair);
-  setPair(nextPair);
-};
+// const setNextPair = async (
+//   previousPair: Pair | null,
+//   setPair: React.Dispatch<React.SetStateAction<Pair | null>>,
+//   getNextPair: (previousPair: Pair | null) => Promise<Pair | null>
+// ) => {
+//   const nextPair = await getNextPair(previousPair);
+//   setPair(nextPair);
+// };
 
 const auth = getAuth();
 
-async function signInWithGoogle(
-  setUser: React.Dispatch<React.SetStateAction<User | null | undefined>>
-) {
+const signInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    console.log("User signed in with Google:", user);
-    setUser(user);
+    await signInWithRedirect(auth, provider);
   } catch (error) {
     console.error("Error signing in with Google:", error);
   }
-}
+};
 
-const setOwner = async (
-  setIsOwner: React.Dispatch<React.SetStateAction<boolean>>,
-  user: User
+const getGoogleRedirectResult = async (
+  setUser: React.Dispatch<React.SetStateAction<User | null>>,
+  setIsOwner: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
-  const tokenResult = await user.getIdTokenResult();
+  try {
+    const userCredential = await getRedirectResult(auth);
+    if (userCredential != null) {
+      const tokenResult = await userCredential.user.getIdTokenResult();
 
-  setIsOwner(!!tokenResult.claims["owner"]);
+      setUser(userCredential.user);
+      setIsOwner(!!tokenResult.claims["owner"]);
+    } else {
+      console.log("Not logged in.");
+    }
+  } catch (error) {
+    console.error("Error retrieving Google login results:", error);
+  }
 };
 
 export const EvalHandler = () => {
@@ -50,8 +56,8 @@ export const EvalHandler = () => {
   const evalServiceRef = useRef(
     new EvaluationServiceImpl(new RepositoryImpl(firebaseApp))
   );
-  const [pair, setPair] = useState<Pair | null>(null);
-  const [user, setUser] = useState<User | null>();
+  const [pair, _setPair] = useState<Pair | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isOwner, setIsOwner] = useState<boolean>(false);
 
   if (evalServiceRef.current.getCurrentUserId() == null) {
@@ -59,14 +65,12 @@ export const EvalHandler = () => {
   }
 
   if (pair == null) {
-    setNextPair(pair, setPair, evalServiceRef.current.getNextPair);
+    // setNextPair(pair, setPair, evalServiceRef.current.getNextPair);
   }
 
-  useEffect(() => {
-    if (user) {
-      setOwner(setIsOwner, user);
-    }
-  }, [user]);
+  if (user == null) {
+    getGoogleRedirectResult(setUser, setIsOwner);
+  }
 
   return (
     <div className="eval-handler">
@@ -77,10 +81,7 @@ export const EvalHandler = () => {
       >
         Reset
       </button>
-      <button
-        disabled={user != null}
-        onClick={async () => await signInWithGoogle(setUser)}
-      >
+      <button disabled={user != null} onClick={signInWithGoogle}>
         Sign in with Google
       </button>
     </div>

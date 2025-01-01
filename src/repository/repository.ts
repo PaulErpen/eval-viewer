@@ -55,7 +55,7 @@ export class RepositoryImpl implements Repository {
     return result.docs[0].data();
   };
 
-  ratePair = async (pair: Pair, rating: Rating) => {};
+  ratePair = async (_pair: Pair, _rating: Rating) => {};
 
   reset = async () => {
     await this.clearCollection("pair");

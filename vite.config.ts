@@ -16,4 +16,13 @@ export default defineConfig({
       },
     },
   ],
+  server: {
+    proxy: {
+      "/__": {
+        target: "https://gs-on-a-budget.firebaseapp.com", // Replace with your Firebase project URL
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 });

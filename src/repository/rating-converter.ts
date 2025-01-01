@@ -19,7 +19,7 @@ export const ratingConverter: FirestoreDataConverter<Rating> = {
   },
   fromFirestore: function (
     snapshot: QueryDocumentSnapshot<DocumentData, DocumentData>,
-    options?: SnapshotOptions
+    _options?: SnapshotOptions
   ): Rating {
     const data = snapshot.data();
     return {
