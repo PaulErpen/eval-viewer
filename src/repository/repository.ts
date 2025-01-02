@@ -69,6 +69,13 @@ export class RepositoryImpl implements Repository {
       highDetail: false,
       nRatings: 0,
     });
+    addDoc(pairs, {
+      id: "",
+      model1: "mcmc-vsc-truck-low-4_model.ply",
+      model2: "mcmc-vsc-truck-low-4_model.ply",
+      highDetail: true,
+      nRatings: 0,
+    });
   };
 
   private async clearCollection(collectionName: string) {

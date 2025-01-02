@@ -12,14 +12,14 @@ import {
   User,
 } from "firebase/auth";
 
-// const setNextPair = async (
-//   previousPair: Pair | null,
-//   setPair: React.Dispatch<React.SetStateAction<Pair | null>>,
-//   getNextPair: (previousPair: Pair | null) => Promise<Pair | null>
-// ) => {
-//   const nextPair = await getNextPair(previousPair);
-//   setPair(nextPair);
-// };
+const setNextPair = async (
+  previousPair: Pair | null,
+  setPair: React.Dispatch<React.SetStateAction<Pair | null>>,
+  getNextPair: (previousPair: Pair | null) => Promise<Pair | null>
+) => {
+  const nextPair = await getNextPair(previousPair);
+  setPair(nextPair);
+};
 
 const auth = getAuth();
 
@@ -52,7 +52,7 @@ export const EvalHandler = () => {
   const evalServiceRef = useRef(
     new EvaluationServiceImpl(new RepositoryImpl(firebaseApp))
   );
-  const [pair, _setPair] = useState<Pair | null>(null);
+  const [pair, setPair] = useState<Pair | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isOwner, setIsOwner] = useState<boolean>(false);
 
@@ -61,7 +61,7 @@ export const EvalHandler = () => {
   }
 
   if (pair == null) {
-    // setNextPair(pair, setPair, evalServiceRef.current.getNextPair);
+    setNextPair(pair, setPair, evalServiceRef.current.getNextPair);
   }
 
   if (user == null) {

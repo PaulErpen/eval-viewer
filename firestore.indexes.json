@@ -1,4 +1,13 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "pair",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "high_detail", "order": "ASCENDING" },
+        { "fieldPath": "n_ratings", "order": "ASCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }
