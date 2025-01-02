@@ -7,7 +7,6 @@ export interface EvaluationService {
   createUserId: () => string;
   getCurrentUserId: () => string | null;
   getNextPair: (previousPair: Pair | null) => Promise<Pair | null>;
-  reset: () => Promise<void>;
 }
 
 export class EvaluationServiceImpl implements EvaluationService {
@@ -40,8 +39,6 @@ export class EvaluationServiceImpl implements EvaluationService {
 
     return null;
   };
-
-  reset = async () => this.repository.reset();
 }
 
 // source: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid

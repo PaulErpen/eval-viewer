@@ -1,0 +1,10 @@
+name: firebase
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - firebase-admin
+      - google-cloud-storage
