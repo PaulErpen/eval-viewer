@@ -24,4 +24,8 @@ dist-ssr
 *.sw?
 
 public/ignatius-mcmc-1_427_672-no-downscale-with-sh-3_model.ply
-public/mcmc-vsc-truck-low-4_model.ply
+public/
+
+keys
+
+.firebase

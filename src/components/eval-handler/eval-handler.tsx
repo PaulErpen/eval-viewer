@@ -7,7 +7,8 @@ import { Pair } from "../../model/pair";
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithRedirect,
+  // signInWithRedirect,
+  signInWithPopup,
   User,
 } from "firebase/auth";
 
@@ -25,7 +26,7 @@ const auth = getAuth();
 const signInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   try {
-    await signInWithRedirect(auth, provider);
+    await signInWithPopup(auth, provider);
   } catch (error) {
     console.error("Error signing in with Google:", error);
   }
@@ -38,7 +39,9 @@ const loadAuthInfo = async (
   try {
     const tokenResult = await user.getIdTokenResult();
 
-    setIsOwner(!!tokenResult.claims["owner"]);
+    console.log("User has claims " + tokenResult.claims);
+
+    setIsOwner(tokenResult.claims.role === "admin");
   } catch (error) {
     console.error("Could get user token id for roles verification:", error);
   }
@@ -63,9 +66,9 @@ export const EvalHandler = () => {
 
   if (user == null) {
     auth.onAuthStateChanged((user: User | null) => {
-      setUser(user);
-
+      console.log("Auth state changed: " + user);
       if (user != null) {
+        setUser(user);
         loadAuthInfo(user, setIsOwner);
       }
     });
