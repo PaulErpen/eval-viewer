@@ -1,0 +1,18 @@
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Match the folder where public read and admin write is allowed
+    match /splats/{allPaths=**} {
+      // Allow public read access
+      allow read: if true;
+
+      // Allow write access only for admins (you can define an 'admin' custom claim)
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+    
+    // Other files/folders (restrict access to authenticated users)
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.token.admin == true; // Only admin users can read or write
+    }
+  }
+}

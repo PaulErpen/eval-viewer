@@ -33,16 +33,16 @@ if __name__ == "__main__":
 
     pairRef.add(
         {
-            "model_1": "mcmc-vsc-truck-low-4_model.ply",
-            "model_2": "mcmc-vsc-truck-low-4_model.ply",
+            "model_1": "splats/mcmc-vsc-truck-low-4_model.ply",
+            "model_2": "splats/mcmc-vsc-truck-low-4_model.ply",
             "high_detail": False,
             "n_ratings": 0,
         }
     )
     pairRef.add(
         {
-            "model_1": "mcmc-vsc-truck-low-4_model.ply",
-            "model_2": "mcmc-vsc-truck-low-4_model.ply",
+            "model_1": "splats/mcmc-vsc-truck-low-4_model.ply",
+            "model_2": "splats/mcmc-vsc-truck-low-4_model.ply",
             "high_detail": True,
             "n_ratings": 0,
         }

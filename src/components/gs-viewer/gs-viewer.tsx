@@ -45,6 +45,8 @@ export const GSViewer = ({ plyPath }: GSViewerProps) => {
         {
           path: plyPath,
           rotation: [1, 0.0, -0.0, 0.0],
+          format: 2,
+          progressiveLoad: true,
         },
       ]);
       scene.add(gsViewer);
