@@ -39,7 +39,7 @@ const loadAuthInfo = async (
   try {
     const tokenResult = await user.getIdTokenResult();
 
-    console.log("User has claims " + tokenResult.claims);
+    console.log("User has role " + tokenResult.claims.role);
 
     setIsOwner(tokenResult.claims.role === "admin");
   } catch (error) {
@@ -66,7 +66,7 @@ export const EvalHandler = () => {
 
   if (user == null) {
     auth.onAuthStateChanged((user: User | null) => {
-      console.log("Auth state changed: " + user);
+      console.log("Auth state changed");
       if (user != null) {
         setUser(user);
         loadAuthInfo(user, setIsOwner);
