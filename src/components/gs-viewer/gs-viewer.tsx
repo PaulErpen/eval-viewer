@@ -47,13 +47,16 @@ export const GSViewer = ({ plyPath, hideModel }: GSViewerProps) => {
           path: plyPath,
           rotation: [1, 0.0, -0.0, 0.0],
           format: 2,
-          progressiveLoad: true,
         },
       ]);
       scene.add(gsViewer);
 
       const render = () => {
         requestAnimationFrame(render);
+
+        if (renderer.domElement.style.display == "none") {
+          return;
+        }
 
         if (resizeRendererToDisplaySize(renderer)) {
           const canvas = renderer.domElement;
@@ -70,7 +73,7 @@ export const GSViewer = ({ plyPath, hideModel }: GSViewerProps) => {
   }, [plyPath, canvas]);
 
   return (
-    <div className="viewer">
+    <div className="viewer" data-model-path={plyPath}>
       <canvas
         ref={setCanvas}
         style={{ display: hideModel ? "none" : "block" }}
