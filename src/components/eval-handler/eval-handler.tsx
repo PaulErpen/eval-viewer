@@ -7,6 +7,7 @@ export const EvalHandler = () => {
   const { evaluationService } = useServiceContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hideFirstModel, setHideFirstModel] = useState<boolean>(false);
+  const [hideSecondModel, setHideSecondModel] = useState<boolean>(true);
 
   evaluationService.connectLoadingState(setIsLoading);
 
@@ -14,18 +15,26 @@ export const EvalHandler = () => {
     evaluationService.loadNextPair();
   }
 
-  const plyUrl = evaluationService.getFirstPlyUrl();
+  const firstPlyUrl = evaluationService.getFirstPlyUrl();
+  const secondPlyUrl = evaluationService.getSecondPlyUrl();
 
   return (
     <div className="eval-handler">
-      {!isLoading && plyUrl !== null && (
-        <GSViewer plyPath={plyUrl} hideModel={hideFirstModel} />
+      {!isLoading && firstPlyUrl !== null && (
+        <GSViewer plyPath={firstPlyUrl} hideModel={hideFirstModel} />
+      )}
+
+      {!isLoading && secondPlyUrl !== null && (
+        <GSViewer plyPath={secondPlyUrl} hideModel={hideSecondModel} />
       )}
 
       <div className="ui-container">
         <button
           className="switch"
-          onClick={() => setHideFirstModel((prev) => !prev)}
+          onClick={() => {
+            setHideFirstModel((prev) => !prev);
+            setHideSecondModel((prev) => !prev);
+          }}
         >
           Switch model
         </button>
