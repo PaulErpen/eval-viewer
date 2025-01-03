@@ -16,7 +16,6 @@ const somePair: Pair = {
 const mockedRepository: Repository = {
   getNextPair: async (_getHighDetailModel: boolean) => somePair,
   ratePair: async (_pair: Pair, _rating: Rating) => {},
-  reset: async () => {},
 };
 
 describe("EvaluationService", () => {
