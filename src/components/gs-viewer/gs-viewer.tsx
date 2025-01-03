@@ -7,6 +7,7 @@ import "./gs-viewer.scss";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export interface GSViewerProps {
   plyPath: String;
+  hideModel: boolean;
 }
 
 const resizeRendererToDisplaySize = (renderer: THREE.Renderer) => {
@@ -20,7 +21,7 @@ const resizeRendererToDisplaySize = (renderer: THREE.Renderer) => {
   return needResize;
 };
 
-export const GSViewer = ({ plyPath }: GSViewerProps) => {
+export const GSViewer = ({ plyPath, hideModel }: GSViewerProps) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -70,7 +71,10 @@ export const GSViewer = ({ plyPath }: GSViewerProps) => {
 
   return (
     <div className="viewer">
-      <canvas ref={setCanvas} />
+      <canvas
+        ref={setCanvas}
+        style={{ display: hideModel ? "none" : "block" }}
+      />
     </div>
   );
 };
