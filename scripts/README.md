@@ -19,3 +19,7 @@ python3 scripts/set-custom-claims.py \
 python3 scripts/reset-database.py \
     --serviceAccountKeyPath ./keys/gs-on-a-budget-firebase-adminsdk-63ws0-509fffaf5f.json
 ```
+
+```sh
+python3 scripts/upload-files.py -p keys/gs-on-a-budget-firebase-adminsdk-63ws0-509fffaf5f.json  -f /home/paul/Downloads/vsc-models -s splats
+```

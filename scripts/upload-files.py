@@ -49,9 +49,9 @@ if __name__ == "__main__":
         )
         blob = bucket.blob(f"{parsed_args.server_dir}/{file}")
         blob.upload_from_filename(f"{parsed_args.file_dir}/{file}")
-        file_urls.append(blob.public_url)
+        file_urls.append(blob.public_url + "\n")
 
     with open("scripts/file-urls.txt", mode="w") as file_urls_file:
         file_urls_file.writelines(file_urls)
-    
+
     print("Finished")

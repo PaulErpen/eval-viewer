@@ -1,1 +1,4 @@
-https://storage.googleapis.com/gs-on-a-budget.firebasestorage.app/splats/mcmc-vsc-truck-low-4_model.ply
+https://storage.googleapis.com/gs-on-a-budget.firebasestorage.app/splats/mcmc-truck-extended-1.ply
+https://storage.googleapis.com/gs-on-a-budget.firebasestorage.app/splats/mini_splatting-truck-extended-1.ply
+https://storage.googleapis.com/gs-on-a-budget.firebasestorage.app/splats/mini_splatting-truck-low-1.ply
+https://storage.googleapis.com/gs-on-a-budget.firebasestorage.app/splats/mcmc-truck-low-1.ply
