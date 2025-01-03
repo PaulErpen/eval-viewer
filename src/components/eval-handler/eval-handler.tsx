@@ -1,8 +1,6 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { GSViewer } from "../gs-viewer/gs-viewer";
-import { EvaluationServiceImpl } from "../../service/evaluation-service";
-import { useFirebaseContext } from "../../context/firebase-context";
-import { RepositoryImpl } from "../../repository/repository";
+import { useServiceContext } from "../../context/service-context";
 import { Pair } from "../../model/pair";
 import { getDownloadURL, ref, getStorage } from "firebase/storage";
 
@@ -22,19 +20,16 @@ const setNextPair = async (
 };
 
 export const EvalHandler = () => {
-  const firebaseApp = useFirebaseContext();
-  const evalServiceRef = useRef(
-    new EvaluationServiceImpl(new RepositoryImpl(firebaseApp))
-  );
+  const { evaluationService } = useServiceContext();
   const [pair, setPair] = useState<Pair | null>(null);
   const [plyUrl, setPlyUrl] = useState<string | null>(null);
 
-  if (evalServiceRef.current.getCurrentUserId() == null) {
-    evalServiceRef.current.createUserId();
+  if (evaluationService.getCurrentUserId() == null) {
+    evaluationService.createUserId();
   }
 
   if (pair == null) {
-    setNextPair(pair, setPair, evalServiceRef.current.getNextPair, setPlyUrl);
+    setNextPair(pair, setPair, evaluationService.getNextPair, setPlyUrl);
   }
 
   return (

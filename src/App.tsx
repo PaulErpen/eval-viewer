@@ -1,13 +1,13 @@
 import "./App.scss";
 import { EvalHandler } from "./components/eval-handler/eval-handler";
-import { FirebaseContextProvider } from "./context/firebase-context";
+import { ServiceContextProvider } from "./context/service-context";
 
 export const App = () => {
   return (
     <div className="app-container">
-      <FirebaseContextProvider>
+      <ServiceContextProvider>
         <EvalHandler />
-      </FirebaseContextProvider>
+      </ServiceContextProvider>
     </div>
   );
 };
