@@ -1,22 +1,39 @@
 import { Pair } from "../model/pair";
 import { Repository } from "../repository/repository";
+import { generateUUID } from "./helpers/generate-uuid";
+import { DownloadUrlProvider } from "./helpers/download-url-provider";
 
 const USER_ID_LOCAL_STORAGE_KEY = "USER_ID_LOCAL_STORAGE_KEY";
 
 export interface EvaluationService {
-  createUserId: () => string;
   getCurrentUserId: () => string | null;
-  getNextPair: (previousPair: Pair | null) => Promise<Pair | null>;
+  loadNextPair: (previousPair: Pair | null) => Promise<void>;
+  getFirstPlyUrl: () => string;
+  getSecondPlyUrl: () => string;
 }
 
 export class EvaluationServiceImpl implements EvaluationService {
   repository: Repository;
+  currentPair: Pair | null;
+  isLoading: boolean;
+  private firstPlyUrl: string;
+  private secondPlyUrl: string;
+  getDownloadUrl: DownloadUrlProvider;
 
-  constructor(repository: Repository) {
+  constructor(repository: Repository, getDownloadUrl: DownloadUrlProvider) {
     this.repository = repository;
+    this.currentPair = null;
+    this.isLoading = false;
+
+    this.firstPlyUrl = "";
+    this.secondPlyUrl = "";
+
+    this.getDownloadUrl = getDownloadUrl;
+
+    this.createUserId();
   }
 
-  createUserId = () => {
+  private createUserId = () => {
     const userId = crypto.randomUUID ? crypto.randomUUID() : generateUUID();
 
     localStorage.setItem(USER_ID_LOCAL_STORAGE_KEY, userId);
@@ -28,42 +45,49 @@ export class EvaluationServiceImpl implements EvaluationService {
     return localStorage.getItem(USER_ID_LOCAL_STORAGE_KEY);
   };
 
-  getNextPair = async (previousPair: Pair | null) => {
+  loadNextPair = () => {
     const userId = this.getCurrentUserId();
 
-    if (userId) {
-      const previousModelType =
-        previousPair != null ? !previousPair.highDetail : Math.random() <= 0.5;
-      return this.repository.getNextPair(previousModelType);
+    if (!userId) {
+      throw new Error("No user id initialized! Illegal state!");
     }
 
-    return null;
+    this.isLoading = true;
+
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        const previousModelType =
+          this.currentPair != null
+            ? !this.currentPair.highDetail
+            : Math.random() <= 0.5;
+        this.currentPair = await this.repository.getNextPair(previousModelType);
+
+        const [plyUrl1, plyUrl2] = await Promise.all([
+          this.getDownloadUrl(this.currentPair.model1),
+          this.getDownloadUrl(this.currentPair.model2),
+        ]);
+
+        this.firstPlyUrl = plyUrl1;
+        this.secondPlyUrl = plyUrl2;
+        resolve();
+      } finally {
+        this.isLoading = false;
+        reject();
+      }
+    });
   };
-}
 
-// source: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
-function generateUUID() {
-  // Public Domain/MIT
-  console.error(
-    "Secure context unavailable. Generating date based uuid for user! This is strongly discouraged."
-  );
-  var d = new Date().getTime(); //Timestamp
-  var d2 =
-    (typeof performance !== "undefined" &&
-      performance.now &&
-      performance.now() * 1000) ||
-    0; //Time in microseconds since page-load or 0 if unsupported
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    var r = Math.random() * 16; //random number between 0 and 16
-    if (d > 0) {
-      //Use timestamp until depleted
-      r = (d + r) % 16 | 0;
-      d = Math.floor(d / 16);
-    } else {
-      //Use microseconds since page-load if supported
-      r = (d2 + r) % 16 | 0;
-      d2 = Math.floor(d2 / 16);
+  getFirstPlyUrl = () => {
+    if (this.isLoading) {
+      throw new Error("Can't retrieve ply url while loading!");
     }
-    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-  });
+    return this.firstPlyUrl;
+  };
+
+  getSecondPlyUrl = () => {
+    if (this.isLoading) {
+      throw new Error("Can't retrieve ply url while loading!");
+    }
+    return this.secondPlyUrl;
+  };
 }
