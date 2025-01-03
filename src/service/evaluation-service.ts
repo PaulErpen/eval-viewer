@@ -7,31 +7,36 @@ const USER_ID_LOCAL_STORAGE_KEY = "USER_ID_LOCAL_STORAGE_KEY";
 
 export interface EvaluationService {
   getCurrentUserId: () => string | null;
-  loadNextPair: (previousPair: Pair | null) => Promise<void>;
-  getFirstPlyUrl: () => string;
-  getSecondPlyUrl: () => string;
+  getCurrentPair: () => Pair | null;
+  loadNextPair: () => Promise<void>;
+  getFirstPlyUrl: () => string | null;
+  getSecondPlyUrl: () => string | null;
+  connectLoadingState: (setStateAction: (loading: boolean) => void) => void;
 }
 
 export class EvaluationServiceImpl implements EvaluationService {
   repository: Repository;
   currentPair: Pair | null;
-  isLoading: boolean;
-  private firstPlyUrl: string;
-  private secondPlyUrl: string;
+  private firstPlyUrl: string | null;
+  private secondPlyUrl: string | null;
   getDownloadUrl: DownloadUrlProvider;
+  setLoadingStateAction: (loading: boolean) => void = (_bool) => {};
 
   constructor(repository: Repository, getDownloadUrl: DownloadUrlProvider) {
     this.repository = repository;
     this.currentPair = null;
-    this.isLoading = false;
 
-    this.firstPlyUrl = "";
-    this.secondPlyUrl = "";
+    this.firstPlyUrl = null;
+    this.secondPlyUrl = null;
 
     this.getDownloadUrl = getDownloadUrl;
 
     this.createUserId();
   }
+
+  connectLoadingState = (setStateAction: (loading: boolean) => void) => {
+    this.setLoadingStateAction = setStateAction;
+  };
 
   private createUserId = () => {
     const userId = crypto.randomUUID ? crypto.randomUUID() : generateUUID();
@@ -45,6 +50,10 @@ export class EvaluationServiceImpl implements EvaluationService {
     return localStorage.getItem(USER_ID_LOCAL_STORAGE_KEY);
   };
 
+  getCurrentPair = () => {
+    return this.currentPair;
+  };
+
   loadNextPair = () => {
     const userId = this.getCurrentUserId();
 
@@ -52,7 +61,7 @@ export class EvaluationServiceImpl implements EvaluationService {
       throw new Error("No user id initialized! Illegal state!");
     }
 
-    this.isLoading = true;
+    this.setLoadingStateAction(true);
 
     return new Promise<void>(async (resolve, reject) => {
       try {
@@ -71,23 +80,17 @@ export class EvaluationServiceImpl implements EvaluationService {
         this.secondPlyUrl = plyUrl2;
         resolve();
       } finally {
-        this.isLoading = false;
+        this.setLoadingStateAction(false);
         reject();
       }
     });
   };
 
   getFirstPlyUrl = () => {
-    if (this.isLoading) {
-      throw new Error("Can't retrieve ply url while loading!");
-    }
     return this.firstPlyUrl;
   };
 
   getSecondPlyUrl = () => {
-    if (this.isLoading) {
-      throw new Error("Can't retrieve ply url while loading!");
-    }
     return this.secondPlyUrl;
   };
 }

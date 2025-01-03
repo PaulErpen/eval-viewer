@@ -119,10 +119,12 @@ describe("EvaluationService", () => {
         },
         getDownloadUrl
       );
-
+      const loadingStateAction = jest.fn();
+      evalService.connectLoadingState(loadingStateAction);
       evalService.loadNextPair();
 
-      expect(evalService.isLoading).toBeTruthy();
+      expect(loadingStateAction).toHaveBeenCalledTimes(1);
+      expect(loadingStateAction).toHaveBeenLastCalledWith(true);
     });
 
     test("Given a user id in the local storage and a pair, when retrieving the next pair, then it must eventually end the loading state", async () => {
@@ -133,13 +135,15 @@ describe("EvaluationService", () => {
         },
         getDownloadUrl
       );
-
+      const loadingStateAction = jest.fn();
+      evalService.connectLoadingState(loadingStateAction);
       await evalService.loadNextPair();
 
-      expect(evalService.isLoading).toBeFalsy();
+      expect(loadingStateAction).toHaveBeenCalledTimes(2);
+      expect(loadingStateAction).toHaveBeenLastCalledWith(false);
     });
 
-    test("Given a user id in the local storage and a pair, when retrieving the ply url while loading, then it must throw an error", async () => {
+    test("Given a user id in the local storage and a pair, when retrieving the ply url while not loaded, then it must be null", async () => {
       localStorage.setItem("USER_ID_LOCAL_STORAGE_KEY", userId);
       const evalService = new EvaluationServiceImpl(
         {
@@ -150,7 +154,7 @@ describe("EvaluationService", () => {
 
       evalService.loadNextPair();
 
-      expect(() => evalService.getFirstPlyUrl()).toThrow();
+      expect(evalService.getFirstPlyUrl()).toBeNull();
     });
 
     test("Given a user id in the local storage and a pair, when retrieving the ply url after loading, then it must return the right ply url", async () => {

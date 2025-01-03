@@ -1,10 +1,11 @@
 import { createContext, PropsWithChildren, useContext } from "react";
-import { initializeFirebase } from "./initialize-firebase";
+import { initializeFirebase } from "./helpers/initialize-firebase";
 import {
   EvaluationService,
   EvaluationServiceImpl,
 } from "../service/evaluation-service";
 import { RepositoryImpl } from "../repository/repository";
+import { provideDownloadUrl } from "./helpers/provide-download-url";
 
 export interface ServiceContext {
   evaluationService: EvaluationService;
@@ -12,7 +13,10 @@ export interface ServiceContext {
 
 const firebaseApp = initializeFirebase();
 const serviceContextInstance = {
-  evaluationService: new EvaluationServiceImpl(new RepositoryImpl(firebaseApp)),
+  evaluationService: new EvaluationServiceImpl(
+    new RepositoryImpl(firebaseApp),
+    provideDownloadUrl
+  ),
 };
 const ServiceContext = createContext<ServiceContext>(serviceContextInstance);
 
