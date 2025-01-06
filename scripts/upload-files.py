@@ -1,5 +1,6 @@
 import argparse
 import os
+from pathlib import Path
 
 import firebase_admin
 from firebase_admin import credentials
@@ -43,13 +44,15 @@ if __name__ == "__main__":
 
     file_urls = []
 
-    for file in os.listdir(parsed_args.file_dir):
-        print(
-            f'uploading "{parsed_args.file_dir}/{file}" to "{parsed_args.server_dir}/{file}"'
-        )
-        blob = bucket.blob(f"{parsed_args.server_dir}/{file}")
-        blob.upload_from_filename(f"{parsed_args.file_dir}/{file}")
-        file_urls.append(blob.public_url + "\n")
+    files = os.listdir(parsed_args.file_dir)
+    for idx, file in enumerate(files):
+        if Path(f"{parsed_args.file_dir}/{file}").is_file():
+            print(
+                f'uploading {idx+1}/{len(files)} "{parsed_args.file_dir}/{file}" to "{parsed_args.server_dir}/{file}"'
+            )
+            blob = bucket.blob(f"{parsed_args.server_dir}/{file}")
+            blob.upload_from_filename(f"{parsed_args.file_dir}/{file}")
+            file_urls.append(blob.public_url + "\n")
 
     with open("scripts/file-urls.txt", mode="w") as file_urls_file:
         file_urls_file.writelines(file_urls)
