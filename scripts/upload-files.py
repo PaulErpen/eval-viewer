@@ -121,7 +121,7 @@ if __name__ == "__main__":
         compress_model(parsed_args.dataDir, file_path, TMP_PATH)
 
         blob = bucket.blob(f"{parsed_args.server_dir}/{desired_file_name}.ksplat")
-        blob.upload_from_filename(f"{parsed_args.file_dir}/{file}")
+        blob.upload_from_filename(TMP_PATH)
         file_urls.append(blob.public_url + "\n")
         os.unlink(TMP_PATH)
 
