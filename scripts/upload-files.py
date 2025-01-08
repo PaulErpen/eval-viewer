@@ -116,7 +116,7 @@ if __name__ == "__main__":
 
     for idx, file in enumerate(file_registry):
         file_path, desired_file_name = file
-        print(f'compressing {idx+1}/{len(len(file_registry))} "{desired_file_name}"')
+        print(f'compressing {idx+1}/{len(file_registry)} "{desired_file_name}"')
         TMP_PATH = f"{parsed_args.dataDir}/{desired_file_name}.ksplat"
         compress_model(parsed_args.dataDir, file_path, TMP_PATH)
 
