@@ -16,6 +16,8 @@ export const pairConverter: FirestoreDataConverter<Pair> = {
       model_2: modelObject.model2,
       high_detail: modelObject.highDetail,
       n_ratings: modelObject.nRatings,
+      rotation: modelObject.rotation,
+      position: modelObject.position,
     };
   },
   fromFirestore: function (
@@ -29,6 +31,8 @@ export const pairConverter: FirestoreDataConverter<Pair> = {
       model2: data.model_2,
       highDetail: data.high_detail,
       nRatings: data.n_ratings,
+      rotation: data.rotation,
+      position: data.position,
     };
   },
 };

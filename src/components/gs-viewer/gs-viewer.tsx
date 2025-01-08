@@ -8,6 +8,13 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 export interface GSViewerProps {
   plyPath: String;
   hideModel: boolean;
+  rotation_w: number;
+  rotation_qx: number;
+  rotation_qy: number;
+  rotation_qz: number;
+  position_x: number;
+  position_y: number;
+  position_z: number;
 }
 
 const resizeRendererToDisplaySize = (renderer: THREE.Renderer) => {
@@ -21,7 +28,17 @@ const resizeRendererToDisplaySize = (renderer: THREE.Renderer) => {
   return needResize;
 };
 
-export const GSViewer = ({ plyPath, hideModel }: GSViewerProps) => {
+export const GSViewer = ({
+  plyPath,
+  hideModel,
+  rotation_w,
+  rotation_qx,
+  rotation_qy,
+  rotation_qz,
+  position_x,
+  position_y,
+  position_z,
+}: GSViewerProps) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -44,6 +61,9 @@ export const GSViewer = ({ plyPath, hideModel }: GSViewerProps) => {
       });
       gsViewer.addSplatScene(plyPath, {
         progressiveLoad: true,
+        format: 1,
+        rotation: [rotation_w, rotation_qx, rotation_qy, rotation_qz],
+        position: [position_x, position_y, position_z],
       });
       scene.add(gsViewer);
 

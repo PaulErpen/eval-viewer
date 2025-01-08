@@ -5,6 +5,60 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import firebase_admin.auth
 from google.cloud.firestore_v1 import CollectionReference
+import numpy as np
+
+
+def rotation_to_quaternion(
+    x: float, y: float, z: float, degrees=False
+) -> Tuple[float, float, float, float]:
+    """
+    Compute a rotation quaternion from X, Y, and Z rotation angles.
+
+    Parameters:
+        x (float): Rotation angle around the X-axis (in radians by default).
+        y (float): Rotation angle around the Y-axis (in radians by default).
+        z (float): Rotation angle around the Z-axis (in radians by default).
+        degrees (bool): If True, input angles are treated as degrees.
+
+    Returns:
+        tuple: Quaternion as (w, x, y, z).
+    """
+    if degrees:
+        x = np.radians(x)
+        y = np.radians(y)
+        z = np.radians(z)
+
+    # Compute half-angles
+    cx = np.cos(x / 2)
+    cy = np.cos(y / 2)
+    cz = np.cos(z / 2)
+    sx = np.sin(x / 2)
+    sy = np.sin(y / 2)
+    sz = np.sin(z / 2)
+
+    # Quaternion multiplication (Z * Y * X order)
+    w = cx * cy * cz + sx * sy * sz
+    qx = sx * cy * cz - cx * sy * sz
+    qy = cx * sy * cz + sx * cy * sz
+    qz = cx * cy * sz - sx * sy * cz
+
+    return (w, qx, qy, qz)
+
+
+def get_rotation_from_dataset(path: str) -> Tuple[float, float, float, float]:
+    if "truck" in path:
+        # mapping from supersplat: x, y, z -> -z, y, -x
+        return rotation_to_quaternion(x=1.0, y=0.0, z=10.0, degrees=True)
+    else:
+        raise Exception("dataset not known for " + path)
+
+
+def get_position_from_dataset(path: str) -> Tuple[float, float, float]:
+    if "truck" in path:
+        # mapping from supersplat: x, y, z -> -x, y, z
+        return (0.58, 0.0, 0.65)
+    else:
+        raise Exception("dataset not known for " + path)
 
 
 def extract_data_from_url(url) -> Tuple[str, str, str, str]:
@@ -78,12 +132,14 @@ if __name__ == "__main__":
                                 "dataset": dataset,
                                 "size": size,
                                 "n_ratings": 0,
+                                "rotation": get_rotation_from_dataset(dataset),
+                                "position": get_position_from_dataset(dataset),
                             }
                         )
                         print(f"added pair in group {group_name}:")
                         print(f'- "{model_name_1}"')
                         print(f'- "{model_name_2}"')
-                        print(f'- high_detail = {is_high_detail}\n')
+                        print(f"- high_detail = {is_high_detail}\n")
 
             else:
                 print(f"{group_name}: only has {group}")

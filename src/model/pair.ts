@@ -4,4 +4,6 @@ export interface Pair {
   model2: string;
   highDetail: boolean;
   nRatings: number;
+  rotation: Array<number>;
+  position: Array<number>;
 }
