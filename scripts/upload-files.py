@@ -2,7 +2,7 @@ import argparse
 import os
 from pathlib import Path
 from typing import List, NamedTuple
-
+from reduce import reduce_model_size
 from google.cloud import storage
 
 
@@ -116,20 +116,29 @@ if __name__ == "__main__":
 
     for idx, file in enumerate(file_registry):
         file_path, desired_file_name = file
+
+        if "mcmc" in file_path:
+            gs_model = reduce_model_size(file_path)
+            TMP_MCMC = f"{parsed_args.dataDir}/tmp_mcmc.ply"
+            gs_model.save_ply(TMP_MCMC)
+            file_path = TMP_MCMC
+
         print(f'compressing {idx+1}/{len(file_registry)} "{desired_file_name}"')
-        TMP_PATH = f"{parsed_args.dataDir}/{desired_file_name}.ksplat"
-        compress_model(parsed_args.dataDir, file_path, TMP_PATH)
+        TMP_PATH_KSPLAT = f"{parsed_args.dataDir}/{desired_file_name}.ksplat"
+        compress_model(parsed_args.dataDir, file_path, TMP_PATH_KSPLAT)
 
         print(
-            f'uploading {idx+1}/{len(file_registry)} "{TMP_PATH}" to "{parsed_args.server_dir}/{desired_file_name}.ksplat"'
+            f'uploading {idx+1}/{len(file_registry)} "{TMP_PATH_KSPLAT}" to "{parsed_args.server_dir}/{desired_file_name}.ksplat"'
         )
         blob = bucket.blob(f"{parsed_args.server_dir}/{desired_file_name}.ksplat")
-        blob.upload_from_filename(TMP_PATH)
+        blob.upload_from_filename(TMP_PATH_KSPLAT)
 
         print(f'upload finished {idx+1}/{len(file_registry)} to "{blob.public_url}"')
         file_urls.append(blob.public_url + "\n")
 
-        os.unlink(TMP_PATH)
+        os.unlink(TMP_PATH_KSPLAT)
+        if "mcmc" in file_path:
+            os.unlink(TMP_MCMC)
 
     with open(f"{parsed_args.dataDir}/file-urls.txt", mode="w") as file_urls_file:
         file_urls_file.writelines(file_urls)

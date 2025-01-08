@@ -29,3 +29,5 @@ public/
 keys
 
 .firebase
+
+**/__pycache__
