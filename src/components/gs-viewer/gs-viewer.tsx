@@ -40,10 +40,9 @@ export const GSViewer = ({ plyPath, hideModel }: GSViewerProps) => {
 
       const gsViewer = new GaussianSplats3D.DropInViewer({
         integerBasedSort: false,
+        sphericalHarmonicsDegree: 0,
       });
       gsViewer.addSplatScene(plyPath, {
-        rotation: [1, 0.0, -0.0, 0.0],
-        format: 2,
         progressiveLoad: true,
       });
       scene.add(gsViewer);
