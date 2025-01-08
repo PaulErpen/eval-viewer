@@ -120,9 +120,15 @@ if __name__ == "__main__":
         TMP_PATH = f"{parsed_args.dataDir}/{desired_file_name}.ksplat"
         compress_model(parsed_args.dataDir, file_path, TMP_PATH)
 
+        print(
+            f'uploading {idx+1}/{len(file_registry)} "{TMP_PATH}" to "{parsed_args.server_dir}/{desired_file_name}.ksplat"'
+        )
         blob = bucket.blob(f"{parsed_args.server_dir}/{desired_file_name}.ksplat")
         blob.upload_from_filename(TMP_PATH)
+
+        print(f'upload finished {idx+1}/{len(file_registry)} to "{blob.public_url}"')
         file_urls.append(blob.public_url + "\n")
+
         os.unlink(TMP_PATH)
 
     with open(f"{parsed_args.dataDir}/file-urls.txt", mode="w") as file_urls_file:
