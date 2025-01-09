@@ -6,8 +6,7 @@ import "./eval-handler.scss";
 export const EvalHandler = () => {
   const { evaluationService } = useServiceContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hideFirstModel, setHideFirstModel] = useState<boolean>(false);
-  const [hideSecondModel, setHideSecondModel] = useState<boolean>(true);
+  const [showFirstModel, setShowFirstModel] = useState<boolean>(false);
 
   evaluationService.connectLoadingState(setIsLoading);
 
@@ -21,24 +20,11 @@ export const EvalHandler = () => {
 
   return (
     <div className="eval-handler">
-      {!isLoading && firstPlyUrl !== null && (
+      {!isLoading && firstPlyUrl !== null && secondPlyUrl !== null && (
         <GSViewer
-          plyPath={firstPlyUrl}
-          hideModel={hideFirstModel}
-          rotation_w={currentPair ? currentPair.rotation[0] : 0}
-          rotation_qx={currentPair ? currentPair.rotation[1] : 0}
-          rotation_qy={currentPair ? currentPair.rotation[2] : 0}
-          rotation_qz={currentPair ? currentPair.rotation[3] : 0}
-          position_x={currentPair ? currentPair.position[0] : 0}
-          position_y={currentPair ? currentPair.position[1] : 0}
-          position_z={currentPair ? currentPair.position[2] : 0}
-        />
-      )}
-
-      {!isLoading && secondPlyUrl !== null && (
-        <GSViewer
-          plyPath={secondPlyUrl}
-          hideModel={hideSecondModel}
+          plyPath1={firstPlyUrl}
+          plyPath2={secondPlyUrl}
+          showFirst={showFirstModel}
           rotation_w={currentPair ? currentPair.rotation[0] : 0}
           rotation_qx={currentPair ? currentPair.rotation[1] : 0}
           rotation_qy={currentPair ? currentPair.rotation[2] : 0}
@@ -53,8 +39,7 @@ export const EvalHandler = () => {
         <button
           className="switch"
           onClick={() => {
-            setHideFirstModel((prev) => !prev);
-            setHideSecondModel((prev) => !prev);
+            setShowFirstModel((prev) => !prev);
           }}
         >
           Switch model
