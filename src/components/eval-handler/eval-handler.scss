@@ -1,16 +1,23 @@
 .eval-handler {
-    position: relative;
-    height: 100vh;
+  position: relative;
+  height: 100vh;
 
-    .ui-container {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        padding: 5px;
-        background-color: white;
+  .ui-container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px;
+    display: flex;
+    background-color: white;
+    border-radius: 5px;
 
-        button.switch {
-
-        }
+    & > * {
+      margin: 4px 2px;
     }
+
+    button.switch {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+  }
 }

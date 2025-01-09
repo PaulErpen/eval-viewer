@@ -9,11 +9,13 @@ export interface RatingService {
 
 export class RatingServiceImpl implements RatingService {
   private userId: string;
+  private pairId: string;
   private firstRating: number | null;
   private secondRating: number | null;
 
-  constructor(userId: string) {
+  constructor(userId: string, pairId: string) {
     this.userId = userId;
+    this.pairId = pairId;
     this.firstRating = null;
     this.secondRating = null;
   }
@@ -34,6 +36,7 @@ export class RatingServiceImpl implements RatingService {
     }
     return {
       id: "",
+      pairId: this.pairId,
       userId: this.userId,
       rating1: this.firstRating ?? -1,
       rating2: this.secondRating ?? -1,

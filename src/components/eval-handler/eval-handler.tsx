@@ -2,6 +2,7 @@ import { useState } from "react";
 import { GSViewer } from "../gs-viewer/gs-viewer";
 import { useServiceContext } from "../../context/service-context";
 import "./eval-handler.scss";
+import { IQASelect } from "../iqa-select/iqa-select";
 
 export const EvalHandler = () => {
   const { evaluationService } = useServiceContext();
@@ -44,6 +45,20 @@ export const EvalHandler = () => {
         >
           Switch model
         </button>
+        <IQASelect
+          title={"Model A"}
+          fieldName="model_1"
+          value={null}
+          setValue={() => {}}
+          disabled={!showFirstModel}
+        />
+        <IQASelect
+          title={"Model B"}
+          fieldName="model_2"
+          value={null}
+          setValue={() => {}}
+          disabled={showFirstModel}
+        />
       </div>
     </div>
   );
