@@ -19,7 +19,13 @@ export const IQASelect = ({
     <div className={"iqa-select" + (disabled ? " disabled" : "")}>
       <div className="iqa-select-title">{title}</div>
       <fieldset>
-        <div onClick={() => setValue(5)}>
+        <div
+          onClick={() => {
+            if (!disabled) {
+              setValue(5);
+            }
+          }}
+        >
           <input
             type="radio"
             id="5"
@@ -30,7 +36,13 @@ export const IQASelect = ({
           />
           <label htmlFor="Excellent">Excellent</label>
         </div>
-        <div onClick={() => setValue(4)}>
+        <div
+          onClick={() => {
+            if (!disabled) {
+              setValue(4);
+            }
+          }}
+        >
           <input
             type="radio"
             id="4"
@@ -41,7 +53,13 @@ export const IQASelect = ({
           />
           <label htmlFor="Good">Good</label>
         </div>
-        <div onClick={() => setValue(3)}>
+        <div
+          onClick={() => {
+            if (!disabled) {
+              setValue(3);
+            }
+          }}
+        >
           <input
             type="radio"
             id="3"
@@ -52,7 +70,13 @@ export const IQASelect = ({
           />
           <label htmlFor="Fair">Fair</label>
         </div>
-        <div onClick={() => setValue(2)}>
+        <div
+          onClick={() => {
+            if (!disabled) {
+              setValue(2);
+            }
+          }}
+        >
           <input
             type="radio"
             id="2"
@@ -63,7 +87,13 @@ export const IQASelect = ({
           />
           <label htmlFor="Poor">Poor</label>
         </div>
-        <div onClick={() => setValue(1)}>
+        <div
+          onClick={() => {
+            if (!disabled) {
+              setValue(1);
+            }
+          }}
+        >
           <input
             type="radio"
             id="1"
