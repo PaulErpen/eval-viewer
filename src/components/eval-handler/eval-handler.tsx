@@ -8,8 +8,8 @@ export const EvalHandler = () => {
     isLoading,
     showFirstModel,
     toggleModels,
-    getFirstPlyUrl,
-    getSecondPlyUrl,
+    firstPlyUrl,
+    secondPlyUrl,
     currentPair,
     isRatingReady,
     firstRating,
@@ -24,8 +24,8 @@ export const EvalHandler = () => {
     <div className="eval-handler">
       <GSViewer
         isServiceLoading={isLoading}
-        plyPath1={getFirstPlyUrl()}
-        plyPath2={getSecondPlyUrl()}
+        plyPath1={firstPlyUrl}
+        plyPath2={secondPlyUrl}
         showFirst={showFirstModel}
         rotation_w={currentPair ? currentPair.rotation[0] : 0}
         rotation_qx={currentPair ? currentPair.rotation[1] : 0}

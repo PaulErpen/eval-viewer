@@ -11,20 +11,18 @@ export interface EvaluationService {
   getCurrentUserId: () => string | null;
   getCurrentPair: () => Pair | null;
   loadNextPair: () => Promise<void>;
-  getFirstPlyUrl: () => string | null;
-  getSecondPlyUrl: () => string | null;
-  connectLoadingState: (setStateAction: (loading: boolean) => void) => void;
   submitRating: (rating: Rating) => Promise<void>;
+  getPlyUrls: () => Promise<{
+    plyUrl1: string;
+    plyUrl2: string;
+  }>;
 }
 
 export class EvaluationServiceImpl implements EvaluationService {
   private tutorial: boolean;
   repository: Repository;
   currentPair: Pair;
-  private firstPlyUrl: string | null;
-  private secondPlyUrl: string | null;
   getDownloadUrl: DownloadUrlProvider;
-  setLoadingStateAction: (loading: boolean) => void = (_bool) => {};
 
   constructor(repository: Repository, getDownloadUrl: DownloadUrlProvider) {
     this.tutorial = true;
@@ -39,34 +37,24 @@ export class EvaluationServiceImpl implements EvaluationService {
       rotation: [0.7071067811865476, 0.0, 0.0, -0.7071067811865475],
       position: [0.0, 0.0, 0.0],
     };
-    this.firstPlyUrl = null;
-    this.secondPlyUrl = null;
-
-    this.setPlyUrls([
-      this.getDownloadUrl(this.currentPair.model1),
-      this.getDownloadUrl(this.currentPair.model2),
-    ]);
 
     this.createUserId();
   }
 
-  private setPlyUrls = async (promises: Array<Promise<string>>) => {
-    this.setLoadingStateAction(true);
+  getPlyUrls = async () => {
+    const [plyUrl1, plyUrl2] = await Promise.all([
+      this.getDownloadUrl(this.currentPair.model1),
+      this.getDownloadUrl(this.currentPair.model2),
+    ]);
 
-    const [plyUrl1, plyUrl2] = await Promise.all(promises);
-
-    this.firstPlyUrl = plyUrl1;
-    this.secondPlyUrl = plyUrl2;
-
-    this.setLoadingStateAction(false);
+    return {
+      plyUrl1,
+      plyUrl2,
+    };
   };
 
   isInTutorialMode = () => {
     return this.tutorial;
-  };
-
-  connectLoadingState = (setStateAction: (loading: boolean) => void) => {
-    this.setLoadingStateAction = setStateAction;
   };
 
   private createUserId = () => {
@@ -88,15 +76,11 @@ export class EvaluationServiceImpl implements EvaluationService {
   loadNextPair = () => {
     const wasInTutorialMode = this.tutorial;
     this.tutorial = false;
-    this.firstPlyUrl = null;
-    this.secondPlyUrl = null;
     const userId = this.getCurrentUserId();
 
     if (!userId) {
       throw new Error("No user id initialized! Illegal state!");
     }
-
-    this.setLoadingStateAction(true);
 
     return new Promise<void>(async (resolve, reject) => {
       try {
@@ -107,28 +91,12 @@ export class EvaluationServiceImpl implements EvaluationService {
           !previousModelType
         );
 
-        this.setPlyUrls([
-          this.getDownloadUrl(this.currentPair.model1),
-          this.getDownloadUrl(this.currentPair.model2),
-        ]);
-        this.setLoadingStateAction(false);
-
         resolve();
       } catch (e) {
         console.error(e);
         reject();
-      } finally {
-        this.setLoadingStateAction(false);
       }
     });
-  };
-
-  getFirstPlyUrl = () => {
-    return this.firstPlyUrl;
-  };
-
-  getSecondPlyUrl = () => {
-    return this.secondPlyUrl;
   };
 
   submitRating = (rating: Rating) => {
