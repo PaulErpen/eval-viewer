@@ -19,16 +19,40 @@
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
-
-      button.switch {
-      }
     }
   }
-  
+
   .tutorial-header {
     position: absolute;
     top: 10px;
     left: 10px;
     font-size: 2rem;
+  }
+
+  button {
+    background: #2485bf;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 7px;
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+    font-size: 1.1rem;
+
+    &:hover {
+      background: #0a283a;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    & > svg {
+      margin-top: 2px;
+      margin-bottom: 3px;
+      margin-right: 3px;
+    }
   }
 }

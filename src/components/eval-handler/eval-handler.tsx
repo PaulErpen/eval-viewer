@@ -2,6 +2,7 @@ import { GSViewer } from "../gs-viewer/gs-viewer";
 import "./eval-handler.scss";
 import { IQASelect } from "../iqa-select/iqa-select";
 import { useEvaluationHook } from "../../hooks/use-evaluation-service";
+import { FaAnglesRight, FaRotate } from "react-icons/fa6";
 
 export const EvalHandler = () => {
   const {
@@ -50,14 +51,16 @@ export const EvalHandler = () => {
             onClick={toggleModels}
             disabled={isLoading}
           >
-            Switch model
+            <FaRotate />
+            <span>Switch model</span>
           </button>
           <button
             className="next"
             onClick={loadNextPair}
             disabled={isLoading || !isRatingReady}
           >
-            Load next
+            <FaAnglesRight />
+            <span>Load next</span>
           </button>
         </div>
         <IQASelect
