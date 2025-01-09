@@ -16,6 +16,7 @@ export const EvalHandler = () => {
     setFirstRating,
     secondRating,
     setSecondRating,
+    loadNextPair,
   } = useEvaluationHook();
 
   return (
@@ -36,9 +37,22 @@ export const EvalHandler = () => {
       )}
 
       <div className="ui-container">
-        <button className="switch" onClick={toggleModels}>
-          Switch model
-        </button>
+        <div className="button-container">
+          <button
+            className="switch"
+            onClick={toggleModels}
+            disabled={isLoading}
+          >
+            Switch model
+          </button>
+          <button
+            className="next"
+            onClick={loadNextPair}
+            disabled={isLoading || !isRatingReady}
+          >
+            Load next
+          </button>
+        </div>
         <IQASelect
           title={"Model A"}
           fieldName="model_1"

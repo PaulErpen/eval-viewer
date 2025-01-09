@@ -30,6 +30,7 @@ const getDownloadUrl: DownloadUrlProvider = (modelName: string) => {
 const mockedRepository: Repository = {
   getNextPair: async (_getHighDetailModel: boolean) => somePair,
   ratePair: async (_pair: Pair, _rating: Rating) => {},
+  submitRating: async (_rating: Rating) => Promise.resolve(),
 };
 
 describe("EvaluationService", () => {

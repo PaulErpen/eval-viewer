@@ -15,6 +15,7 @@ export interface EvaluationHookResult {
   setFirstRating: (firstRating: number) => void;
   secondRating: number | null;
   setSecondRating: (secondRating: number) => void;
+  loadNextPair: () => void;
 }
 
 export const useEvaluationHook: () => EvaluationHookResult = () => {
@@ -40,6 +41,7 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
     firstRating,
     secondRating
   );
+  const isRatingReady = ratingProvider.isReady();
 
   return {
     isLoading,
@@ -48,10 +50,18 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
     firstPlyUrl,
     secondPlyUrl,
     currentPair,
-    isRatingReady: ratingProvider.isReady(),
+    isRatingReady,
     firstRating,
     setFirstRating,
     secondRating,
     setSecondRating,
+    loadNextPair: async () => {
+      if (!isLoading && isRatingReady) {
+        evaluationService.submitRating(ratingProvider.getRating());
+        evaluationService.loadNextPair();
+        setFirstRating(null);
+        setSecondRating(null);
+      }
+    },
   };
 };

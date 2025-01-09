@@ -8,17 +8,18 @@ import {
   query,
   where,
   limit,
-  deleteDoc,
   doc,
-  addDoc,
+  setDoc,
 } from "firebase/firestore";
 import { Pair } from "../model/pair";
 import { Rating } from "../model/rating";
 import { pairConverter } from "./pair-converter";
+import { ratingConverter } from "./rating-converter";
 
 export interface Repository {
   getNextPair: (getHighDetailModel: boolean) => Promise<Pair>;
   ratePair: (pair: Pair, rating: Rating) => Promise<void>;
+  submitRating: (rating: Rating) => Promise<void>;
 }
 
 export class RepositoryImpl implements Repository {
@@ -31,6 +32,15 @@ export class RepositoryImpl implements Repository {
     // this.functions = getFunctions(this.app);
     this.db = getFirestore(this.app);
   }
+  submitRating = async (rating: Rating) => {
+    const ratings = collection(this.db, "rating").withConverter(
+      ratingConverter
+    );
+
+    const ratingDoc = doc(ratings);
+
+    return setDoc(ratingDoc, rating);
+  };
 
   getNextPair = async (getHighDetailModel: boolean) => {
     const pairs = collection(this.db, "pair").withConverter(pairConverter);

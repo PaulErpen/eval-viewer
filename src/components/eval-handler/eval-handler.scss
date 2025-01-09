@@ -15,9 +15,13 @@
       margin: 4px 2px;
     }
 
-    button.switch {
-      margin-top: auto;
-      margin-bottom: auto;
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      
+      button.switch {
+      }
     }
   }
 }

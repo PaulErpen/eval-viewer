@@ -2,6 +2,7 @@ import { Pair } from "../model/pair";
 import { Repository } from "../repository/repository";
 import { generateUUID } from "./helpers/generate-uuid";
 import { DownloadUrlProvider } from "./helpers/download-url-provider";
+import { Rating } from "../model/rating";
 
 const USER_ID_LOCAL_STORAGE_KEY = "USER_ID_LOCAL_STORAGE_KEY";
 
@@ -12,6 +13,7 @@ export interface EvaluationService {
   getFirstPlyUrl: () => string | null;
   getSecondPlyUrl: () => string | null;
   connectLoadingState: (setStateAction: (loading: boolean) => void) => void;
+  submitRating: (rating: Rating) => Promise<void>;
 }
 
 export class EvaluationServiceImpl implements EvaluationService {
@@ -93,4 +95,8 @@ export class EvaluationServiceImpl implements EvaluationService {
   getSecondPlyUrl = () => {
     return this.secondPlyUrl;
   };
+
+  submitRating = (rating: Rating) => {
+    return this.repository.submitRating(rating);
+  }
 }
