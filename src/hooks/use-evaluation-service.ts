@@ -7,8 +7,8 @@ export interface EvaluationHookResult {
   isLoading: boolean;
   showFirstModel: boolean;
   toggleModels: () => void;
-  firstPlyUrl: string | null;
-  secondPlyUrl: string | null;
+  getFirstPlyUrl: () => string | null;
+  getSecondPlyUrl: () => string | null;
   currentPair: Pair | null;
   isRatingReady: boolean;
   firstRating: number | null;
@@ -29,8 +29,6 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
 
   evaluationService.connectLoadingState(setIsLoading);
 
-  const firstPlyUrl = evaluationService.getFirstPlyUrl();
-  const secondPlyUrl = evaluationService.getSecondPlyUrl();
   const currentPair = evaluationService.getCurrentPair();
   const ratingProvider = new RatingProviderImpl(
     evaluationService.getCurrentUserId(),
@@ -45,8 +43,8 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
     isLoading,
     showFirstModel,
     toggleModels: () => setShowFirstModel((prev) => !prev),
-    firstPlyUrl,
-    secondPlyUrl,
+    getFirstPlyUrl: evaluationService.getFirstPlyUrl,
+    getSecondPlyUrl: evaluationService.getSecondPlyUrl,
     currentPair,
     isRatingReady,
     firstRating,

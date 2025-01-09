@@ -8,8 +8,8 @@ export const EvalHandler = () => {
     isLoading,
     showFirstModel,
     toggleModels,
-    firstPlyUrl,
-    secondPlyUrl,
+    getFirstPlyUrl,
+    getSecondPlyUrl,
     currentPair,
     isRatingReady,
     firstRating,
@@ -22,21 +22,19 @@ export const EvalHandler = () => {
 
   return (
     <div className="eval-handler">
-      {!isLoading && firstPlyUrl !== null && secondPlyUrl !== null && (
-        <GSViewer
-          isServiceLoading={isLoading}
-          plyPath1={firstPlyUrl}
-          plyPath2={secondPlyUrl}
-          showFirst={showFirstModel}
-          rotation_w={currentPair ? currentPair.rotation[0] : 0}
-          rotation_qx={currentPair ? currentPair.rotation[1] : 0}
-          rotation_qy={currentPair ? currentPair.rotation[2] : 0}
-          rotation_qz={currentPair ? currentPair.rotation[3] : 0}
-          position_x={currentPair ? currentPair.position[0] : 0}
-          position_y={currentPair ? currentPair.position[1] : 0}
-          position_z={currentPair ? currentPair.position[2] : 0}
-        />
-      )}
+      <GSViewer
+        isServiceLoading={isLoading}
+        plyPath1={getFirstPlyUrl()}
+        plyPath2={getSecondPlyUrl()}
+        showFirst={showFirstModel}
+        rotation_w={currentPair ? currentPair.rotation[0] : 0}
+        rotation_qx={currentPair ? currentPair.rotation[1] : 0}
+        rotation_qy={currentPair ? currentPair.rotation[2] : 0}
+        rotation_qz={currentPair ? currentPair.rotation[3] : 0}
+        position_x={currentPair ? currentPair.position[0] : 0}
+        position_y={currentPair ? currentPair.position[1] : 0}
+        position_z={currentPair ? currentPair.position[2] : 0}
+      />
 
       <div
         className="tutorial-header"
