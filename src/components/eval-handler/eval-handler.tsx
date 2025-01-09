@@ -24,6 +24,7 @@ export const EvalHandler = () => {
     <div className="eval-handler">
       {!isLoading && firstPlyUrl !== null && secondPlyUrl !== null && (
         <GSViewer
+          isServiceLoading={isLoading}
           plyPath1={firstPlyUrl}
           plyPath2={secondPlyUrl}
           showFirst={showFirstModel}

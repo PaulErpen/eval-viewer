@@ -88,6 +88,8 @@ export class EvaluationServiceImpl implements EvaluationService {
   loadNextPair = () => {
     const wasInTutorialMode = this.tutorial;
     this.tutorial = false;
+    this.firstPlyUrl = null;
+    this.secondPlyUrl = null;
     const userId = this.getCurrentUserId();
 
     if (!userId) {
@@ -109,11 +111,14 @@ export class EvaluationServiceImpl implements EvaluationService {
           this.getDownloadUrl(this.currentPair.model1),
           this.getDownloadUrl(this.currentPair.model2),
         ]);
+        this.setLoadingStateAction(false);
 
         resolve();
+      } catch (e) {
+        console.error(e);
+        reject();
       } finally {
         this.setLoadingStateAction(false);
-        reject();
       }
     });
   };

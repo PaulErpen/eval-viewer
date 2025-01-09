@@ -59,9 +59,10 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
           evaluationService.submitRating(ratingProvider.getRating());
         }
 
-        evaluationService.loadNextPair();
+        await evaluationService.loadNextPair();
         setFirstRating(null);
         setSecondRating(null);
+        setShowFirstModel(true);
       }
     },
     isInTutorialMode,

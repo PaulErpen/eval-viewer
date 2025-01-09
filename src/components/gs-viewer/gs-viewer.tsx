@@ -9,6 +9,7 @@ export interface GSViewerProps {
   plyPath1: String;
   plyPath2: String;
   showFirst: boolean;
+  isServiceLoading: boolean;
   rotation_w: number;
   rotation_qx: number;
   rotation_qy: number;
@@ -33,6 +34,7 @@ export const GSViewer = ({
   plyPath1,
   plyPath2,
   showFirst,
+  isServiceLoading,
   rotation_w,
   rotation_qx,
   rotation_qy,
@@ -44,7 +46,7 @@ export const GSViewer = ({
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    if (canvas && plyPath1 && plyPath1.length > 0) {
+    if (canvas && !isServiceLoading) {
       const scene = new THREE.Scene();
       const renderer = new THREE.WebGLRenderer({
         antialias: false,
@@ -104,7 +106,7 @@ export const GSViewer = ({
       };
       requestAnimationFrame(render);
     }
-  }, [plyPath1, plyPath2, canvas]);
+  }, [plyPath1, plyPath2, canvas, isServiceLoading]);
 
   return (
     <div className="viewer" data-model-path={plyPath1}>
