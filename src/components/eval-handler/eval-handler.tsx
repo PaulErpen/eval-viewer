@@ -17,6 +17,7 @@ export const EvalHandler = () => {
     secondRating,
     setSecondRating,
     loadNextPair,
+    isInTutorialMode,
   } = useEvaluationHook();
 
   return (
@@ -35,6 +36,13 @@ export const EvalHandler = () => {
           position_z={currentPair ? currentPair.position[2] : 0}
         />
       )}
+
+      <div
+        className="tutorial-header"
+        style={{ display: isInTutorialMode ? "block" : "none" }}
+      >
+        Tutorial
+      </div>
 
       <div className="ui-container">
         <div className="button-container">

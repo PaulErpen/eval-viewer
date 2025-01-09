@@ -16,21 +16,18 @@ export interface EvaluationHookResult {
   secondRating: number | null;
   setSecondRating: (secondRating: number) => void;
   loadNextPair: () => void;
+  isInTutorialMode: boolean;
 }
 
 export const useEvaluationHook: () => EvaluationHookResult = () => {
   const { evaluationService } = useServiceContext();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showFirstModel, setShowFirstModel] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [showFirstModel, setShowFirstModel] = useState<boolean>(true);
 
   const [firstRating, setFirstRating] = useState<number | null>(null);
   const [secondRating, setSecondRating] = useState<number | null>(null);
 
   evaluationService.connectLoadingState(setIsLoading);
-
-  if (evaluationService.getCurrentPair() === null && !isLoading) {
-    evaluationService.loadNextPair();
-  }
 
   const firstPlyUrl = evaluationService.getFirstPlyUrl();
   const secondPlyUrl = evaluationService.getSecondPlyUrl();
@@ -42,6 +39,7 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
     secondRating
   );
   const isRatingReady = ratingProvider.isReady();
+  const isInTutorialMode = evaluationService.isInTutorialMode();
 
   return {
     isLoading,
@@ -57,11 +55,15 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
     setSecondRating,
     loadNextPair: async () => {
       if (!isLoading && isRatingReady) {
-        evaluationService.submitRating(ratingProvider.getRating());
+        if (!isInTutorialMode) {
+          evaluationService.submitRating(ratingProvider.getRating());
+        }
+
         evaluationService.loadNextPair();
         setFirstRating(null);
         setSecondRating(null);
       }
     },
+    isInTutorialMode,
   };
 };
