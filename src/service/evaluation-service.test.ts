@@ -12,6 +12,8 @@ const somePair: Pair = {
   model2: "model_2",
   highDetail: true,
   nRatings: 1,
+  rotation: [0.0, 0.0, 0.0, 0.0],
+  position: [0.0, 0.0, 0.0],
 };
 
 const MODEL_1_PLY = "model_1.ply";

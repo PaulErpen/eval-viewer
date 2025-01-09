@@ -1,23 +1,22 @@
-import { useState } from "react";
 import { GSViewer } from "../gs-viewer/gs-viewer";
-import { useServiceContext } from "../../context/service-context";
 import "./eval-handler.scss";
 import { IQASelect } from "../iqa-select/iqa-select";
+import { useEvaluationHook } from "../../hooks/use-evaluation-service";
 
 export const EvalHandler = () => {
-  const { evaluationService } = useServiceContext();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showFirstModel, setShowFirstModel] = useState<boolean>(false);
-
-  evaluationService.connectLoadingState(setIsLoading);
-
-  if (evaluationService.getCurrentPair() === null && !isLoading) {
-    evaluationService.loadNextPair();
-  }
-
-  const firstPlyUrl = evaluationService.getFirstPlyUrl();
-  const secondPlyUrl = evaluationService.getSecondPlyUrl();
-  const currentPair = evaluationService.getCurrentPair();
+  const {
+    isLoading,
+    showFirstModel,
+    toggleModels,
+    firstPlyUrl,
+    secondPlyUrl,
+    currentPair,
+    isRatingReady,
+    firstRating,
+    setFirstRating,
+    secondRating,
+    setSecondRating,
+  } = useEvaluationHook();
 
   return (
     <div className="eval-handler">
@@ -37,26 +36,21 @@ export const EvalHandler = () => {
       )}
 
       <div className="ui-container">
-        <button
-          className="switch"
-          onClick={() => {
-            setShowFirstModel((prev) => !prev);
-          }}
-        >
+        <button className="switch" onClick={toggleModels}>
           Switch model
         </button>
         <IQASelect
           title={"Model A"}
           fieldName="model_1"
-          value={null}
-          setValue={() => {}}
+          value={firstRating}
+          setValue={setFirstRating}
           disabled={!showFirstModel}
         />
         <IQASelect
           title={"Model B"}
           fieldName="model_2"
-          value={null}
-          setValue={() => {}}
+          value={secondRating}
+          setValue={setSecondRating}
           disabled={showFirstModel}
         />
       </div>
