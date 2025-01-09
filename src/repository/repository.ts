@@ -10,6 +10,9 @@ import {
   limit,
   doc,
   setDoc,
+  updateDoc,
+  getDoc,
+  increment,
 } from "firebase/firestore";
 import { Pair } from "../model/pair";
 import { Rating } from "../model/rating";
@@ -36,6 +39,13 @@ export class RepositoryImpl implements Repository {
     const ratings = collection(this.db, "rating").withConverter(
       ratingConverter
     );
+
+    const pair = doc(this.db, "pair", rating.pairId).withConverter(
+      pairConverter
+    );
+    updateDoc(pair, {
+      n_ratings: increment(1),
+    });
 
     const ratingDoc = doc(ratings);
 

@@ -4,12 +4,14 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /pair/{document=**} {
       allow read: if true; // everyone can read
+      allow update: if (request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['n_ratings'])); // only allow updates on n_ratings
       allow write: if request.auth != null && request.auth.token.role == 'admin';  // Only admin can write
     }
 
     match /rating/{document=**} {
       allow read: if true; // everyone can read
-      allow create: if true;  // everyone can create (pulic append only)
+      allow create: if true;  // everyone can create (public append only)
       allow delete: if request.auth.token.role == 'admin';
     }
   }
