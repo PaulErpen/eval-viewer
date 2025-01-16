@@ -1,4 +1,5 @@
 import argparse
+import os
 from pathlib import Path
 from typing import List, NamedTuple
 
@@ -95,6 +96,8 @@ if __name__ == "__main__":
     for file_path, required_name in registry:
         if not Path(file_path).exists():
             not_exists.append(f'{required_name} @ "{file_path}"')
+        elif parsed_args.clean:
+            os.unlink(file_path)
 
     print(f"{len(not_exists)} files do not exist!")
     for msg in not_exists:
