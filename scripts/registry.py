@@ -9,127 +9,63 @@ class ModelFile(NamedTuple):
 
 
 def get_file_registry(data_dir: str) -> List[ModelFile]:
-    return [
-        # Default
-        ModelFile(
-            f"{data_dir}/models/default/default-truck-low-1/default-truck-low-1_model.ply",
-            "default-truck-low-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/default/default-truck-medium-1/default-truck-medium-1_model.ply",
-            "default-truck-medium-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/default/default-truck-high-1/default-truck-high-1_model.ply",
-            "default-truck-high-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/default/default-truck-extended-1/default-truck-extended-1_model.ply",
-            "default-truck-extended-1",
-        ),
-        # MCMC
-        ModelFile(
-            f"{data_dir}/models/mcmc/mcmc-truck-low-1/mcmc-truck-low-1_model.ply",
-            "mcmc-truck-low-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mcmc/mcmc-truck-medium-1/mcmc-truck-medium-1_model.ply",
-            "mcmc-truck-medium-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mcmc/mcmc-truck-high-1/mcmc-truck-high-1_model.ply",
-            "mcmc-truck-high-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mcmc/mcmc-truck-extended-1/mcmc-truck-extended-1_model.ply",
-            "mcmc-truck-extended-1",
-        ),
-        # Mini Splatting
-        ModelFile(
-            f"{data_dir}/models/mini-splatting/mini_splatting-truck-low-1/point_cloud/iteration_30000/point_cloud.ply",
-            "mini_splatting-truck-low-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mini-splatting/mini_splatting-truck-medium-1/point_cloud/iteration_30000/point_cloud.ply",
-            "mini_splatting-truck-medium-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mini-splatting/mini_splatting-truck-high-1/point_cloud/iteration_30000/point_cloud.ply",
-            "mini_splatting-truck-high-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mini-splatting/mini_splatting-truck-extended-1/point_cloud/iteration_30000/point_cloud.ply",
-            "mini_splatting-truck-extended-1",
-        ),
-        # EAGLES
-        ModelFile(
-            f"{data_dir}/models/eagles/eagles-truck-low-1/point_cloud/iteration_30000/point_cloud.ply",
-            "eagles-truck-low-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/eagles/eagles-truck-medium-1/point_cloud/iteration_30000/point_cloud.ply",
-            "eagles-truck-medium-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/eagles/eagles-truck-high-1/point_cloud/iteration_30000/point_cloud.ply",
-            "eagles-truck-high-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/eagles/eagles-truck-extended-1/point_cloud/iteration_30000/point_cloud.ply",
-            "eagles-truck-extended-1",
-        ),
-        # Mip Splatting
-        ModelFile(
-            f"{data_dir}/models/mip-splatting/mip_splatting-truck-low-1/point_cloud/iteration_30000/point_cloud.ply",
-            "mip_splatting-truck-low-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mip-splatting/mip_splatting-truck-medium-1/point_cloud/iteration_30000/point_cloud.ply",
-            "mip_splatting-truck-medium-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mip-splatting/mip_splatting-truck-high-1/point_cloud/iteration_30000/point_cloud.ply",
-            "mip_splatting-truck-high-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mip-splatting/mip_splatting-truck-extended-1/point_cloud/iteration_30000/point_cloud.ply",
-            "mip_splatting-truck-extended-1",
-        ),
-        # Gaussian Pro
-        ModelFile(
-            f"{data_dir}/models/gaussian-pro/gaussian_pro-truck-low-1/point_cloud/iteration_30000/point_cloud.ply",
-            "gaussian_pro-truck-low-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/gaussian-pro/gaussian_pro-truck-medium-1/point_cloud/iteration_30000/point_cloud.ply",
-            "gaussian_pro-truck-medium-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/gaussian-pro/gaussian_pro-truck-high-1/point_cloud/iteration_30000/point_cloud.ply",
-            "gaussian_pro-truck-high-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/gaussian-pro/gaussian_pro-truck-extended-1/point_cloud/iteration_30000/point_cloud.ply",
-            "gaussian_pro-truck-extended-1",
-        ),
-        # GeoGaussian
-        ModelFile(
-            f"{data_dir}/models/geogaussian/geo_gaussian-truck-low-1/point_cloud/iteration_30000/point_cloud.ply",
-            "geo_gaussian-truck-low-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/geogaussian/geo_gaussian-truck-medium-1/point_cloud/iteration_30000/point_cloud.ply",
-            "geo_gaussian-truck-medium-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/geogaussian/geo_gaussian-truck-high-1/point_cloud/iteration_30000/point_cloud.ply",
-            "geo_gaussian-truck-high-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/geogaussian/geo_gaussian-truck-extended-1/point_cloud/iteration_30000/point_cloud.ply",
-            "geo_gaussian-truck-extended-1",
-        ),
-    ]
+    model_files = []
+    for size in ["low", "medium", "high", "extended"]:
+        for dataset in ["room", "stump", "truck"]:
+            for technique in [
+                "default",
+                "mcmc",
+                "mini_splatting",
+                "eagles",
+                "mip_splatting",
+                "gaussian_pro",
+                "geo_gaussian",
+            ]:
+                if technique in ["default", "mcmc"]:
+                    model_files.append(
+                        ModelFile(
+                            f"{data_dir}/models/{technique}/{technique}-{dataset}-{size}-1/{technique}-{dataset}-{size}-1_model.ply",
+                            f"{technique}-{dataset}-{size}-1",
+                        )
+                    )
+                elif technique == "mini_splatting":
+                    model_files.append(
+                        ModelFile(
+                            f"{data_dir}/models/mini-splatting/mini_splatting-{dataset}-{size}-1/point_cloud/iteration_30000/point_cloud.ply",
+                            f"mini_splatting-{dataset}-{size}-1",
+                        ),
+                    )
+                elif technique == "eagles":
+                    model_files.append(
+                        ModelFile(
+                            f"{data_dir}/models/eagles/eagles-{dataset}-{size}-1/point_cloud/iteration_30000/point_cloud.ply",
+                            f"eagles-{dataset}-{size}-1",
+                        ),
+                    )
+                elif technique == "mip_splatting":
+                    model_files.append(
+                        ModelFile(
+                            f"{data_dir}/models/mip-splatting/mip_splatting-{dataset}-{size}-1/point_cloud/iteration_30000/point_cloud.ply",
+                            f"mip_splatting-{dataset}-{size}-1",
+                        ),
+                    )
+                elif technique == "gaussian_pro":
+                    model_files.append(
+                        ModelFile(
+                            f"{data_dir}/models/gaussian-pro/gaussian_pro-{dataset}-{size}-1/point_cloud/iteration_30000/point_cloud.ply",
+                            f"gaussian_pro-{dataset}-{size}-1",
+                        ),
+                    )
+                elif technique == "geo_gaussian":
+                    model_files.append(
+                        ModelFile(
+                            f"{data_dir}/models/geogaussian/geo_gaussian-{dataset}-{size}-1/point_cloud/iteration_30000/point_cloud.ply",
+                            f"geo_gaussian-{dataset}-{size}-1",
+                        ),
+                    )
+                else:
+                    raise Exception(f"technique {technique} unknown!")
+    return model_files
 
 
 if __name__ == "__main__":
