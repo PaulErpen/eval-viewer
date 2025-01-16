@@ -1,53 +1,10 @@
 import argparse
 import os
 from pathlib import Path
-from typing import List, NamedTuple
 from reduce import reduce_model_size
 from google.cloud import storage
 
-
-class ModelFile(NamedTuple):
-    file_location: str
-    desired_name: str
-
-
-def get_file_registry(data_dir: str) -> List[ModelFile]:
-    return [
-        # Default
-        ModelFile(
-            f"{data_dir}/models/default/default-truck-low-1/default-truck-low-1_model.ply",
-            "default-truck-low-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/default/default-truck-medium-1/default-truck-medium-1_model.ply",
-            "default-truck-medium-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/default/default-truck-high-1/default-truck-high-1_model.ply",
-            "default-truck-high-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/default/default-truck-extended-1/default-truck-extended-1_model.ply",
-            "default-truck-extended-1",
-        ),
-        # MCMC
-        ModelFile(
-            f"{data_dir}/models/mcmc/mcmc-truck-low-1/mcmc-truck-low-1_model.ply",
-            "mcmc-truck-low-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mcmc/mcmc-truck-medium-1/mcmc-truck-medium-1_model.ply",
-            "mcmc-truck-medium-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mcmc/mcmc-truck-high-1/mcmc-truck-high-1_model.ply",
-            "mcmc-truck-high-1",
-        ),
-        ModelFile(
-            f"{data_dir}/models/mcmc/mcmc-truck-extended-1/mcmc-truck-extended-1_model.ply",
-            "mcmc-truck-extended-1",
-        ),
-    ]
+from .registry import get_file_registry
 
 
 def compress_model(
