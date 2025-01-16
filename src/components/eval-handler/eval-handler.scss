@@ -1,6 +1,7 @@
 .eval-handler {
   position: relative;
   height: 100vh;
+  font-family: sans-serif;
 
   .ui-container {
     position: absolute;
@@ -22,11 +23,14 @@
     }
   }
 
-  .tutorial-header {
+  .header {
     position: absolute;
     top: 10px;
     left: 10px;
     font-size: 2rem;
+    background-color: white;
+    padding: 3px 9px 6px 9px;
+    border-radius: 4px;
   }
 
   button {
@@ -53,6 +57,24 @@
       margin-top: 2px;
       margin-bottom: 3px;
       margin-right: 3px;
+    }
+  }
+
+  .finished-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 9px;
+    border-radius: 4px;
+    transform: translate(-50%, -50%);
+
+    &>span {
+      margin-bottom: 1rem;
     }
   }
 }

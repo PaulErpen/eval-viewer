@@ -17,6 +17,9 @@ export interface EvaluationHookResult {
   setSecondRating: (secondRating: number) => void;
   loadNextPair: () => void;
   isInTutorialMode: boolean;
+  nPairsRated: number;
+  isFinished: boolean;
+  restartEvaluation: () => Promise<void>;
 }
 
 export const useEvaluationHook: () => EvaluationHookResult = () => {
@@ -28,6 +31,8 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
 
   const [firstRating, setFirstRating] = useState<number | null>(null);
   const [secondRating, setSecondRating] = useState<number | null>(null);
+  const [nPairsRated, setNPairsRated] = useState<number>(0);
+  const [isFinished, setIsFinished] = useState<boolean>(false);
 
   const currentPair = evaluationService.getCurrentPair();
   const ratingProvider = new RatingProviderImpl(
@@ -66,18 +71,35 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
     setSecondRating,
     loadNextPair: async () => {
       setIsLoading(true);
-      if (!isLoading && isRatingReady) {
+      if (!isLoading && isRatingReady && !isFinished) {
         if (!isInTutorialMode) {
           evaluationService.submitRating(ratingProvider.getRating());
         }
 
-        await evaluationService.loadNextPair();
+        if (nPairsRated >= 5) {
+          setIsFinished(true);
+        } else {
+          setNPairsRated((prev) => ++prev);
+          await evaluationService.loadNextPair();
+        }
+        setIsLoading(false);
         setFirstRating(null);
         setSecondRating(null);
         setShowFirstModel(true);
       }
-      setIsLoading(false);
     },
     isInTutorialMode,
+    nPairsRated,
+    isFinished,
+    restartEvaluation: async () => {
+      if (isFinished) {
+        setIsLoading(true);
+        setNPairsRated(0);
+
+        await evaluationService.loadNextPair();
+        setIsLoading(false);
+        setIsFinished(false);
+      }
+    },
   };
 };

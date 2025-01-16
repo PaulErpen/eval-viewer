@@ -45,6 +45,8 @@ export const GSViewer = ({
 }: GSViewerProps) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const plyPath1Ref = useRef<string | null>(plyPath1);
+  const gsViewer1Ref = useRef<null | any>(null);
+  const gsViewer2Ref = useRef<null | any>(null);
 
   if (
     canvas &&
@@ -53,6 +55,13 @@ export const GSViewer = ({
     plyPath1 &&
     plyPath2
   ) {
+    if (gsViewer1Ref.current) {
+      gsViewer1Ref.current.dispose();
+    }
+    if (gsViewer2Ref.current) {
+      gsViewer1Ref.current.dispose();
+    }
+
     const scene = new THREE.Scene();
     const renderer = new THREE.WebGLRenderer({
       antialias: false,
@@ -65,7 +74,7 @@ export const GSViewer = ({
     controls.enableDamping = true;
     camera.position.z = 2;
 
-    const gsViewer1 = createViewer(
+    gsViewer1Ref.current = createViewer(
       plyPath1,
       rotation_w,
       rotation_qx,
@@ -75,9 +84,9 @@ export const GSViewer = ({
       position_y,
       position_z
     );
-    scene.add(gsViewer1);
+    scene.add(gsViewer1Ref.current);
 
-    const gsViewer2 = createViewer(
+    gsViewer2Ref.current = createViewer(
       plyPath2,
       rotation_w,
       rotation_qx,
@@ -87,17 +96,17 @@ export const GSViewer = ({
       position_y,
       position_z
     );
-    scene.add(gsViewer2);
+    scene.add(gsViewer2Ref.current);
 
     const render = () => {
       requestAnimationFrame(render);
 
       if (renderer.domElement.dataset.showFirst === "true") {
-        gsViewer1.visible = true;
-        gsViewer2.visible = false;
+        gsViewer1Ref.current.visible = true;
+        gsViewer2Ref.current.visible = false;
       } else {
-        gsViewer1.visible = false;
-        gsViewer2.visible = true;
+        gsViewer1Ref.current.visible = false;
+        gsViewer2Ref.current.visible = true;
       }
 
       if (resizeRendererToDisplaySize(renderer)) {
