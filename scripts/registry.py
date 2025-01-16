@@ -97,7 +97,8 @@ if __name__ == "__main__":
         if not Path(file_path).exists():
             not_exists.append(f'{required_name} @ "{file_path}"')
         elif parsed_args.clean:
-            os.unlink(file_path)
+            # os.unlink(file_path)
+            print("Skip cleaning step, this is too dangerous!")
 
     print(f"{len(not_exists)} files do not exist!")
     for msg in not_exists:
