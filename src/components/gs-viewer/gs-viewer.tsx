@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as GaussianSplats3D from "@mkkellogg/gaussian-splats-3d";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import * as THREE from "three";
 import "./gs-viewer.scss";
 // @ts-ignore
@@ -17,6 +17,8 @@ export interface GSViewerProps {
   position_x: number;
   position_y: number;
   position_z: number;
+  fovY: number;
+  aspect: number;
 }
 
 const resizeRendererToDisplaySize = (renderer: THREE.Renderer) => {
@@ -42,6 +44,8 @@ export const GSViewer = ({
   position_x,
   position_y,
   position_z,
+  fovY,
+  aspect,
 }: GSViewerProps) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const plyPath1Ref = useRef<string | null>(plyPath1);
@@ -68,7 +72,7 @@ export const GSViewer = ({
       canvas,
       alpha: true,
     });
-    const camera = new THREE.PerspectiveCamera(75, 2, 0.1, 500);
+    const camera = new THREE.PerspectiveCamera(fovY, aspect, 0.1, 500);
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;

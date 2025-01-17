@@ -18,6 +18,8 @@ export const pairConverter: FirestoreDataConverter<Pair> = {
       n_ratings: modelObject.nRatings,
       rotation: modelObject.rotation,
       position: modelObject.position,
+      fov_y: modelObject.fovY,
+      aspect: modelObject.aspect,
     };
   },
   fromFirestore: function (
@@ -33,6 +35,8 @@ export const pairConverter: FirestoreDataConverter<Pair> = {
       nRatings: data.n_ratings,
       rotation: data.rotation,
       position: data.position,
+      fovY: data.fov_y,
+      aspect: data.aspect,
     };
   },
 };

@@ -6,4 +6,6 @@ export interface Pair {
   nRatings: number;
   rotation: Array<number>;
   position: Array<number>;
+  fovY: number;
+  aspect: number;
 }
