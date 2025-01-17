@@ -57,6 +57,34 @@ def get_position_from_dataset(path: str) -> Tuple[float, float, float]:
     if "truck" in path:
         # mapping from supersplat: x, y, z -> -x, y, z
         return (0.58, 0.0, 0.65)
+    if "room" in path:
+        # mapping from supersplat: x, y, z -> -x, y, z
+        return (0.58, 0.0, 0.65)
+    if "stump" in path:
+        # mapping from supersplat: x, y, z -> -x, y, z
+        return (0.58, 0.0, 0.65)
+    else:
+        raise Exception("dataset not known for " + path)
+
+
+def get_fov_from_dataset(path: str) -> float:
+    if "truck" in path:
+        return 50.5124584368011
+    if "room" in path:
+        return 36.20300882535897
+    if "stump" in path:
+        return 40.04280223394357
+    else:
+        raise Exception("dataset not known for " + path)
+
+
+def get_aspect_from_dataset(path: str) -> float:
+    if "truck" in path:
+        return 1.793767186067828
+    if "room" in path:
+        return 1.500722891566265
+    if "stump" in path:
+        return 1.508484848484849
     else:
         raise Exception("dataset not known for " + path)
 
@@ -134,6 +162,8 @@ if __name__ == "__main__":
                                 "n_ratings": 0,
                                 "rotation": get_rotation_from_dataset(dataset),
                                 "position": get_position_from_dataset(dataset),
+                                "fov_y": get_fov_from_dataset(dataset),
+                                "aspect": get_aspect_from_dataset(dataset),
                             }
                         )
                         print(f"added pair in group {group_name}:")
