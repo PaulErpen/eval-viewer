@@ -36,6 +36,8 @@ export class EvaluationServiceImpl implements EvaluationService {
       nRatings: 0,
       rotation: [0.7071067811865476, 0.0, 0.0, -0.7071067811865475],
       position: [0.0, 0.0, 0.0],
+      fovY: 75,
+      aspect: 2,
     };
 
     this.createUserId();
