@@ -22,7 +22,9 @@ export interface EvaluationHookResult {
   restartEvaluation: () => Promise<void>;
 }
 
-export const useEvaluationHook: () => EvaluationHookResult = () => {
+export const useEvaluationHook: (
+  skipTutorial: boolean
+) => EvaluationHookResult = (skipTutorial: boolean) => {
   const { evaluationService } = useServiceContext();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showFirstModel, setShowFirstModel] = useState<boolean>(true);
@@ -44,18 +46,26 @@ export const useEvaluationHook: () => EvaluationHookResult = () => {
   const isRatingReady = ratingProvider.isReady();
   const isInTutorialMode = evaluationService.isInTutorialMode();
 
-  useEffect(() => {
-    evaluationService.getPlyUrls().then(({ plyUrl1, plyUrl2 }) => {
-      if (!isLoading) {
-        if (plyUrl1 !== firstPlyUrl) {
-          setFirstPlyUrl(plyUrl1);
-        }
-        if (plyUrl2 !== secondPlyUrl) {
-          setSecondPlyUrl(plyUrl2);
-        }
+  const loadNext = async () => {
+    setIsLoading(true);
+    await evaluationService.loadNextPair();
+    setIsLoading(false);
+  };
+
+  if (skipTutorial && isInTutorialMode) {
+    loadNext();
+  }
+
+  evaluationService.getPlyUrls().then(({ plyUrl1, plyUrl2 }) => {
+    if (!isLoading) {
+      if (plyUrl1 !== firstPlyUrl) {
+        setFirstPlyUrl(plyUrl1);
       }
-    });
-  }, [isLoading]);
+      if (plyUrl2 !== secondPlyUrl) {
+        setSecondPlyUrl(plyUrl2);
+      }
+    }
+  });
 
   return {
     isLoading,
