@@ -103,6 +103,9 @@ export class EvaluationServiceImpl implements EvaluationService {
         this.previousPair = this.currentPair;
         this.currentPair = newPair;
 
+        console.log(`Model A: ${this.currentPair.model1}`);
+        console.log(`Model B: ${this.currentPair.model2}`);
+
         resolve();
       } catch (e) {
         console.error(e);
