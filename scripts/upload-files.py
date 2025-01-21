@@ -4,7 +4,7 @@ from pathlib import Path
 from reduce import reduce_model_size
 from google.cloud import storage
 
-from .registry import get_file_registry
+from registry import get_file_registry
 
 
 def compress_model(
