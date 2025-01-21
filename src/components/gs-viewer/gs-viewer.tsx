@@ -72,7 +72,7 @@ export const GSViewer = ({
       canvas,
       alpha: true,
     });
-    const camera = new THREE.PerspectiveCamera(fovY, aspect, 0.1, 500);
+    const camera = new THREE.PerspectiveCamera(fovY, aspect, 0.5, 500);
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;

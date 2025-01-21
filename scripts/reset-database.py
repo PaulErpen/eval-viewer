@@ -49,6 +49,12 @@ def get_rotation_from_dataset(path: str) -> Tuple[float, float, float, float]:
     if "truck" in path:
         # mapping from supersplat: x, y, z -> -z, y, -x
         return rotation_to_quaternion(x=1.0, y=0.0, z=10.0, degrees=True)
+    if "room" in path:
+        # mapping from supersplat: x, y, z -> -z, y, -x
+        return rotation_to_quaternion(x=0.0, y=180.0, z=27.0, degrees=True)
+    if "stump" in path:
+        # mapping from supersplat: x, y, z -> -z, y, -x
+        return rotation_to_quaternion(x=0.0, y=0.0, z=0.0, degrees=True)
     else:
         raise Exception("dataset not known for " + path)
 
@@ -59,10 +65,10 @@ def get_position_from_dataset(path: str) -> Tuple[float, float, float]:
         return (0.58, 0.0, 0.65)
     if "room" in path:
         # mapping from supersplat: x, y, z -> -x, y, z
-        return (0.58, 0.0, 0.65)
+        return (0.0, 1.0, 0.0)
     if "stump" in path:
         # mapping from supersplat: x, y, z -> -x, y, z
-        return (0.58, 0.0, 0.65)
+        return (0.0, 0.0, 0.0)
     else:
         raise Exception("dataset not known for " + path)
 
