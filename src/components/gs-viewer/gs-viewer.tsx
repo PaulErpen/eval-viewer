@@ -104,6 +104,42 @@ export const GSViewer = ({
     );
     scene.add(gsViewer2Ref.current);
 
+    const movementSpeed = 0.04; // Adjust as needed
+    const moveDirection = { x: 0, y: 0 };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case "w":
+          moveDirection.y = 1;
+          break;
+        case "s":
+          moveDirection.y = -1;
+          break;
+        case "a":
+          moveDirection.x = -1;
+          break;
+        case "d":
+          moveDirection.x = 1;
+          break;
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case "w":
+        case "s":
+          moveDirection.y = 0;
+          break;
+        case "a":
+        case "d":
+          moveDirection.x = 0;
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
     const render = () => {
       requestAnimationFrame(render);
 
@@ -119,6 +155,25 @@ export const GSViewer = ({
         const canvas = renderer.domElement;
         camera.aspect = canvas.clientWidth / canvas.clientHeight;
         camera.updateProjectionMatrix();
+      }
+
+      // Update camera gimbal center based on WASD input
+      if (moveDirection.x !== 0 || moveDirection.y !== 0) {
+        const forward = new THREE.Vector3();
+        const right = new THREE.Vector3();
+
+        camera.getWorldDirection(forward);
+        forward.y = 0; // Constrain movement to the XZ plane
+        forward.normalize();
+
+        right.crossVectors(forward, camera.up).normalize();
+
+        const offset = new THREE.Vector3()
+          .addScaledVector(forward, moveDirection.y * movementSpeed)
+          .addScaledVector(right, moveDirection.x * movementSpeed);
+
+        controls.target.add(offset);
+        camera.position.add(offset);
       }
 
       controls.update();
