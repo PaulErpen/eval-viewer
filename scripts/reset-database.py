@@ -47,7 +47,7 @@ def rotation_to_quaternion(
 
 def get_initial_distance_from_dataset(path: str) -> float:
     if "truck" in path:
-        return 2.0
+        return 4.0
     if "room" in path:
         return 1.0
     if "stump" in path:
@@ -73,7 +73,7 @@ def get_rotation_from_dataset(path: str) -> Tuple[float, float, float, float]:
 def get_position_from_dataset(path: str) -> Tuple[float, float, float]:
     if "truck" in path:
         # mapping from supersplat: x, y, z -> -x, y, z
-        return (0.58, 0.0, 0.65)
+        return (0.58, 0.0, 0.4)
     if "room" in path:
         # mapping from supersplat: x, y, z -> -x, y, z
         return (0.0, 1.0, 0.0)
