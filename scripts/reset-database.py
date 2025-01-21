@@ -184,6 +184,7 @@ if __name__ == "__main__":
                                 "initial_distance": get_initial_distance_from_dataset(
                                     dataset
                                 ),
+                                "dataset_name": dataset,
                             }
                         )
                         print(f"added pair in group {group_name}:")

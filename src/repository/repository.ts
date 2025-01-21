@@ -11,7 +11,6 @@ import {
   doc,
   setDoc,
   updateDoc,
-  getDoc,
   increment,
 } from "firebase/firestore";
 import { Pair } from "../model/pair";
@@ -20,7 +19,11 @@ import { pairConverter } from "./pair-converter";
 import { ratingConverter } from "./rating-converter";
 
 export interface Repository {
-  getNextPair: (getHighDetailModel: boolean) => Promise<Pair>;
+  getNextPair: (
+    getHighDetailModel: boolean,
+    previousDataset: string,
+    previousPreviousDataset: string
+  ) => Promise<Pair>;
   ratePair: (pair: Pair, rating: Rating) => Promise<void>;
   submitRating: (rating: Rating) => Promise<void>;
 }
@@ -52,9 +55,17 @@ export class RepositoryImpl implements Repository {
     return setDoc(ratingDoc, rating);
   };
 
-  getNextPair = async (getHighDetailModel: boolean) => {
+  getNextPair = async (
+    getHighDetailModel: boolean,
+    previousDataset: string,
+    previousPreviousDataset: string
+  ) => {
     const pairs = collection(this.db, "pair").withConverter(pairConverter);
     const highDetailConstraint = where("high_detail", "==", getHighDetailModel);
+    const notInPreviousDataset = where("dataset_name", "not-in", [
+      previousDataset,
+      previousPreviousDataset,
+    ]);
     const orderByRatings = orderBy("n_ratings", "asc");
     const limit1 = limit(1);
 
@@ -62,6 +73,7 @@ export class RepositoryImpl implements Repository {
       pairs,
       highDetailConstraint,
       orderByRatings,
+      notInPreviousDataset,
       limit1
     );
 

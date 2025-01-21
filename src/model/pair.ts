@@ -9,4 +9,5 @@ export interface Pair {
   fovY: number;
   aspect: number;
   initialDistance: number;
+  datasetName: string;
 }

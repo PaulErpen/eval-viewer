@@ -5,7 +5,8 @@
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "high_detail", "order": "ASCENDING" },
-        { "fieldPath": "n_ratings", "order": "ASCENDING" }
+        { "fieldPath": "n_ratings", "order": "ASCENDING" },
+        { "fieldPath": "dataset_name", "order": "ASCENDING" }
       ]
     }
   ],

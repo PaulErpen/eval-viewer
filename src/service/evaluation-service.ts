@@ -22,6 +22,7 @@ export class EvaluationServiceImpl implements EvaluationService {
   private tutorial: boolean;
   repository: Repository;
   currentPair: Pair;
+  previousPair: Pair | null;
   getDownloadUrl: DownloadUrlProvider;
 
   constructor(repository: Repository, getDownloadUrl: DownloadUrlProvider) {
@@ -39,7 +40,9 @@ export class EvaluationServiceImpl implements EvaluationService {
       fovY: 75,
       aspect: 2,
       initialDistance: 2,
+      datasetName: "tutorial",
     };
+    this.previousPair = null;
 
     this.createUserId();
   }
@@ -90,9 +93,15 @@ export class EvaluationServiceImpl implements EvaluationService {
         const previousModelType = wasInTutorialMode
           ? Math.random() <= 0.5
           : this.currentPair.highDetail;
-        this.currentPair = await this.repository.getNextPair(
-          !previousModelType
+        const newPair = await this.repository.getNextPair(
+          !previousModelType,
+          this.currentPair ? this.currentPair.datasetName : "",
+          this.previousPair
+            ? this.previousPair.datasetName
+            : this.currentPair.datasetName
         );
+        this.previousPair = this.currentPair;
+        this.currentPair = newPair;
 
         resolve();
       } catch (e) {
