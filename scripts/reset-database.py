@@ -45,6 +45,17 @@ def rotation_to_quaternion(
     return (w, qx, qy, qz)
 
 
+def get_initial_distance_from_dataset(path: str) -> float:
+    if "truck" in path:
+        return 2.0
+    if "room" in path:
+        return 1.0
+    if "stump" in path:
+        return 5.0
+    else:
+        raise Exception("dataset not known for " + path)
+
+
 def get_rotation_from_dataset(path: str) -> Tuple[float, float, float, float]:
     if "truck" in path:
         # mapping from supersplat: x, y, z -> -z, y, -x
@@ -170,6 +181,9 @@ if __name__ == "__main__":
                                 "position": get_position_from_dataset(dataset),
                                 "fov_y": get_fov_from_dataset(dataset),
                                 "aspect": get_aspect_from_dataset(dataset),
+                                "initial_distance": get_initial_distance_from_dataset(
+                                    dataset
+                                ),
                             }
                         )
                         print(f"added pair in group {group_name}:")

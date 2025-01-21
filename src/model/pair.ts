@@ -8,4 +8,5 @@ export interface Pair {
   position: Array<number>;
   fovY: number;
   aspect: number;
+  initialDistance: number;
 }

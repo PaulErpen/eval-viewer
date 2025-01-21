@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useServiceContext } from "../context/service-context";
 import { Pair } from "../model/pair";
 import { RatingProviderImpl } from "../service/rating-provider/rating-provider";

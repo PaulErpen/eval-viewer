@@ -41,6 +41,7 @@ export const EvalHandler = () => {
           position_z={currentPair ? currentPair.position[2] : 0}
           fovY={currentPair ? currentPair.fovY : 1}
           aspect={currentPair ? currentPair.aspect : 1}
+          initialDistance={currentPair ? currentPair.initialDistance : 1}
         />
       )}
 

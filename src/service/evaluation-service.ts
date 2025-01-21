@@ -38,6 +38,7 @@ export class EvaluationServiceImpl implements EvaluationService {
       position: [0.0, 0.0, 0.0],
       fovY: 75,
       aspect: 2,
+      initialDistance: 2,
     };
 
     this.createUserId();

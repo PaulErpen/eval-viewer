@@ -20,6 +20,7 @@ export const pairConverter: FirestoreDataConverter<Pair> = {
       position: modelObject.position,
       fov_y: modelObject.fovY,
       aspect: modelObject.aspect,
+      initial_distance: modelObject.initialDistance,
     };
   },
   fromFirestore: function (
@@ -37,6 +38,7 @@ export const pairConverter: FirestoreDataConverter<Pair> = {
       position: data.position,
       fovY: data.fov_y,
       aspect: data.aspect,
+      initialDistance: data.initial_distance,
     };
   },
 };

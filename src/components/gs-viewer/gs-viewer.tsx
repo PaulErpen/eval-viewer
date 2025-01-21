@@ -19,6 +19,7 @@ export interface GSViewerProps {
   position_z: number;
   fovY: number;
   aspect: number;
+  initialDistance: number;
 }
 
 const resizeRendererToDisplaySize = (renderer: THREE.Renderer) => {
@@ -46,6 +47,7 @@ export const GSViewer = ({
   position_z,
   fovY,
   aspect,
+  initialDistance,
 }: GSViewerProps) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const plyPath1Ref = useRef<string | null>(plyPath1);
@@ -76,7 +78,7 @@ export const GSViewer = ({
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
-    camera.position.z = 2;
+    camera.position.z = initialDistance;
 
     gsViewer1Ref.current = createViewer(
       plyPath1,
