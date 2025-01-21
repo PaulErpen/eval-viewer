@@ -54,7 +54,7 @@ def get_rotation_from_dataset(path: str) -> Tuple[float, float, float, float]:
         return rotation_to_quaternion(x=0.0, y=180.0, z=27.0, degrees=True)
     if "stump" in path:
         # mapping from supersplat: x, y, z -> -z, y, -x
-        return rotation_to_quaternion(x=0.0, y=0.0, z=0.0, degrees=True)
+        return rotation_to_quaternion(x=2.0, y=0.0, z=47.0, degrees=True)
     else:
         raise Exception("dataset not known for " + path)
 
@@ -68,7 +68,7 @@ def get_position_from_dataset(path: str) -> Tuple[float, float, float]:
         return (0.0, 1.0, 0.0)
     if "stump" in path:
         # mapping from supersplat: x, y, z -> -x, y, z
-        return (0.0, 0.0, 0.0)
+        return (-0.5, 1.5, 0.2)
     else:
         raise Exception("dataset not known for " + path)
 

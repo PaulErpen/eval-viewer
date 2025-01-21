@@ -22,7 +22,7 @@ export const EvalHandler = () => {
     nPairsRated,
     isFinished,
     restartEvaluation,
-  } = useEvaluationHook(false);
+  } = useEvaluationHook(true);
 
   return (
     <div className="eval-handler">
