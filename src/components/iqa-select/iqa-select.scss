@@ -1,4 +1,9 @@
 .iqa-select {
+    .iqa-select-title {
+        font-weight: bold;
+        font-size: larger;
+    }
+
     &.disabled {
         color: rgb(175, 175, 175);
     }
