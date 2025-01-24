@@ -1,0 +1,21 @@
+.camera-controls-panel {
+  padding: 3px 10px 8px 7px;
+  background-color: white;
+  border-radius: 5px;
+
+  .img-wrapper {
+    width: 90px;
+
+    img {
+      max-width: 90px;
+      max-height: 75px;
+      margin-right: 8px;
+    }
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+}

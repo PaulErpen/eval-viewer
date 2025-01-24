@@ -3,6 +3,7 @@ import "./eval-handler.scss";
 import { IQASelect } from "../iqa-select/iqa-select";
 import { useEvaluationHook } from "../../hooks/use-evaluation-service";
 import { FaAnglesRight, FaRotate } from "react-icons/fa6";
+import { CameraControlsPanel } from "../camera-controls-panel/camera-controls-panel";
 
 export const EvalHandler = () => {
   const {
@@ -67,39 +68,47 @@ export const EvalHandler = () => {
       )}
 
       {!isFinished && (
-        <div className="ui-container">
-          <div className="button-container">
-            <button
-              className="switch"
-              onClick={toggleModels}
-              disabled={isLoading}
-            >
-              <FaRotate />
-              <span>Switch model</span>
-            </button>
-            <button
-              className="next"
-              onClick={loadNextPair}
-              disabled={isLoading || !isRatingReady}
-            >
-              <FaAnglesRight />
-              <span>Load next</span>
-            </button>
+        <div className="ui-container-wrapper">
+          <div className="camera-controls-wrapper">
+            <CameraControlsPanel />
           </div>
-          <IQASelect
-            title={"Model A"}
-            fieldName="model_1"
-            value={firstRating}
-            setValue={setFirstRating}
-            disabled={!showFirstModel}
-          />
-          <IQASelect
-            title={"Model B"}
-            fieldName="model_2"
-            value={secondRating}
-            setValue={setSecondRating}
-            disabled={showFirstModel}
-          />
+
+          <div className="ui-container">
+            <div className="select-container">
+              <IQASelect
+                title={"Model A"}
+                fieldName="model_1"
+                value={firstRating}
+                setValue={setFirstRating}
+                disabled={!showFirstModel}
+              />
+              <IQASelect
+                title={"Model B"}
+                fieldName="model_2"
+                value={secondRating}
+                setValue={setSecondRating}
+                disabled={showFirstModel}
+              />
+            </div>
+            <div className="button-container">
+              <button
+                className="switch"
+                onClick={toggleModels}
+                disabled={isLoading}
+              >
+                <FaRotate />
+                <span>Switch model</span>
+              </button>
+              <button
+                className="next"
+                onClick={loadNextPair}
+                disabled={isLoading || !isRatingReady}
+              >
+                <FaAnglesRight />
+                <span>Load next</span>
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -3,23 +3,40 @@
   height: 100vh;
   font-family: sans-serif;
 
-  .ui-container {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    padding: 5px;
-    display: flex;
-    background-color: white;
-    border-radius: 5px;
-
-    & > * {
-      margin: 4px 2px;
+  .ui-container-wrapper {
+    .camera-controls-wrapper {
+      position: absolute;
+      top: 10px;
+      right: 10px;
     }
 
-    .button-container {
+    .ui-container {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: white;
+      border-radius: 5px;
+      padding: 5px;
       display: flex;
       flex-direction: column;
-      justify-content: space-evenly;
+
+      .select-container {
+        display: flex;
+      }
+
+      & > * {
+        margin: 4px 2px;
+      }
+
+      .button-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+
+        button {
+          margin-top: 3px;
+        }
+      }
     }
   }
 
@@ -73,7 +90,7 @@
     border-radius: 4px;
     transform: translate(-50%, -50%);
 
-    &>span {
+    & > span {
       margin-bottom: 1rem;
     }
   }
