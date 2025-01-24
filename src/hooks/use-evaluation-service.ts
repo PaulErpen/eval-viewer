@@ -93,7 +93,7 @@ export const useEvaluationHook: (
           setNPairsRated((prev) => ++prev);
         }
 
-        if (nPairsRated >= 6) {
+        if (nPairsRated >= 5) {
           setIsFinished(true);
         } else {
           await evaluationService.loadNextPair();

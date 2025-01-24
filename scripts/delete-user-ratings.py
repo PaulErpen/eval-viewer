@@ -31,14 +31,13 @@ if __name__ == "__main__":
     database = firestore.client()
 
     ratingRef: CollectionReference = database.collection("rating")
-    pairRef: CollectionReference = database.collection("pair")
 
     for ratingDoc in ratingRef.list_documents():
         doc_ref = ratingDoc.get()
         if doc_ref.get("user_id") == parsed_args.userId:
             print(f'deleted rating "{ratingDoc.id}"')
             ratingDoc.delete()
-            pairDoc = pairRef.get(doc_ref.get("pair_id"))
+            pairDoc = database.document(f"pair/{doc_ref.get('pair_id')}")
             pairDoc.update({"n_ratings": int(pairDoc.get().get("n_ratings")) - 1})
 
     firebase_admin.delete_app(app)
