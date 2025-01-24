@@ -23,6 +23,8 @@ export const EvalHandler = () => {
     nPairsRated,
     isFinished,
     restartEvaluation,
+    isCameraControlsExpanded,
+    setIsCameraControlsExpanded,
   } = useEvaluationHook(false);
 
   return (
@@ -70,7 +72,10 @@ export const EvalHandler = () => {
       {!isFinished && (
         <div className="ui-container-wrapper">
           <div className="camera-controls-wrapper">
-            <CameraControlsPanel />
+            <CameraControlsPanel
+              isExpanded={isCameraControlsExpanded}
+              setExpanded={setIsCameraControlsExpanded}
+            />
           </div>
 
           <div className="ui-container">

@@ -20,6 +20,8 @@ export interface EvaluationHookResult {
   nPairsRated: number;
   isFinished: boolean;
   restartEvaluation: () => Promise<void>;
+  isCameraControlsExpanded: boolean;
+  setIsCameraControlsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const useEvaluationHook: (
@@ -35,6 +37,9 @@ export const useEvaluationHook: (
   const [secondRating, setSecondRating] = useState<number | null>(null);
   const [nPairsRated, setNPairsRated] = useState<number>(0);
   const [isFinished, setIsFinished] = useState<boolean>(false);
+
+  const [isCameraControlsExpanded, setIsCameraControlsExpanded] =
+    useState(true);
 
   const currentPair = evaluationService.getCurrentPair();
   const ratingProvider = new RatingProviderImpl(
@@ -80,6 +85,7 @@ export const useEvaluationHook: (
     secondRating,
     setSecondRating,
     loadNextPair: async () => {
+      setIsCameraControlsExpanded(false);
       setIsLoading(true);
       if (!isLoading && isRatingReady && !isFinished) {
         if (!isInTutorialMode) {
@@ -111,5 +117,7 @@ export const useEvaluationHook: (
         setIsFinished(false);
       }
     },
+    isCameraControlsExpanded,
+    setIsCameraControlsExpanded,
   };
 };
