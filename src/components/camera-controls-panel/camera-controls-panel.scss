@@ -2,6 +2,9 @@
   padding: 3px 10px 8px 7px;
   background-color: white;
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
 
   .img-wrapper {
     width: 90px;
