@@ -31,6 +31,12 @@ export const CameraControlsPanel = ({
           </div>
           <div>
             <div className="img-wrapper">
+              <img src="/right-click.png" />
+            </div>
+            <span>to move vertically</span>
+          </div>
+          <div>
+            <div className="img-wrapper">
               <img src="/scroll.png" />
             </div>
             <span>to zoom the camera</span>
