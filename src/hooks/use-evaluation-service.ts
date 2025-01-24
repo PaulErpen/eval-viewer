@@ -89,13 +89,13 @@ export const useEvaluationHook: (
       setIsLoading(true);
       if (!isLoading && isRatingReady && !isFinished) {
         if (!isInTutorialMode) {
-          evaluationService.submitRating(ratingProvider.getRating());
+          await evaluationService.submitRating(ratingProvider.getRating());
+          setNPairsRated((prev) => ++prev);
         }
 
-        if (nPairsRated >= 5) {
+        if (nPairsRated >= 6) {
           setIsFinished(true);
         } else {
-          setNPairsRated((prev) => ++prev);
           await evaluationService.loadNextPair();
         }
         setIsLoading(false);
