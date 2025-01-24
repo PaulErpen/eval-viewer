@@ -104,7 +104,7 @@ export const GSViewer = ({
     );
     scene.add(gsViewer2Ref.current);
 
-    const movementSpeed = 0.04; // Adjust as needed
+    const movementSpeed = 0.002; // Adjust as needed
     const moveDirection = { x: 0, y: 0 };
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -140,7 +140,9 @@ export const GSViewer = ({
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
 
-    const render = () => {
+    let previousTime = 0;
+
+    const render = (currentTime: number) => {
       requestAnimationFrame(render);
 
       if (renderer.domElement.dataset.showFirst === "true") {
@@ -157,6 +159,9 @@ export const GSViewer = ({
         camera.updateProjectionMatrix();
       }
 
+      const delta = currentTime - previousTime;
+      previousTime = currentTime;
+
       // Update camera gimbal center based on WASD input
       if (moveDirection.x !== 0 || moveDirection.y !== 0) {
         const forward = new THREE.Vector3();
@@ -169,8 +174,8 @@ export const GSViewer = ({
         right.crossVectors(forward, camera.up).normalize();
 
         const offset = new THREE.Vector3()
-          .addScaledVector(forward, moveDirection.y * movementSpeed)
-          .addScaledVector(right, moveDirection.x * movementSpeed);
+          .addScaledVector(forward, moveDirection.y * movementSpeed * delta)
+          .addScaledVector(right, moveDirection.x * movementSpeed * delta);
 
         controls.target.add(offset);
         camera.position.add(offset);
