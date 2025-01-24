@@ -90,14 +90,18 @@ export const useEvaluationHook: (
       if (!isLoading && isRatingReady && !isFinished) {
         if (!isInTutorialMode) {
           await evaluationService.submitRating(ratingProvider.getRating());
-          setNPairsRated((prev) => ++prev);
         }
 
-        if (nPairsRated >= 6) {
+        if (nPairsRated >= 5) {
           setIsFinished(true);
         } else {
           await evaluationService.loadNextPair();
         }
+
+        if (!isInTutorialMode) {
+          setNPairsRated((prev) => ++prev);
+        }
+
         setIsLoading(false);
         setFirstRating(null);
         setSecondRating(null);
