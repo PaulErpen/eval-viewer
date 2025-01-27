@@ -31,3 +31,5 @@ keys
 .firebase
 
 **/__pycache__
+
+backups
