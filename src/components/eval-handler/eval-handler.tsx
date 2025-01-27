@@ -4,6 +4,7 @@ import { IQASelect } from "../iqa-select/iqa-select";
 import { useEvaluationHook } from "../../hooks/use-evaluation-service";
 import { FaAnglesRight, FaRotate } from "react-icons/fa6";
 import { CameraControlsPanel } from "../camera-controls-panel/camera-controls-panel";
+import { ModelLozenge } from "../lozenge/model-lozenge";
 
 export const EvalHandler = () => {
   const {
@@ -14,10 +15,8 @@ export const EvalHandler = () => {
     secondPlyUrl,
     currentPair,
     isRatingReady,
-    firstRating,
-    setFirstRating,
-    secondRating,
-    setSecondRating,
+    rating,
+    setRating,
     loadNextPair,
     isInTutorialMode,
     nPairsRated,
@@ -25,6 +24,7 @@ export const EvalHandler = () => {
     restartEvaluation,
     isCameraControlsExpanded,
     setIsCameraControlsExpanded,
+    seenBothModels,
   } = useEvaluationHook(false);
 
   return (
@@ -49,9 +49,14 @@ export const EvalHandler = () => {
       )}
 
       {!isFinished && (
-        <div className="header">
-          {isInTutorialMode && <span>Tutorial</span>}
-          {!isInTutorialMode && <span>{nPairsRated}/6 pairs rated</span>}
+        <div className="header-container">
+          {isInTutorialMode && <span className="header">Tutorial</span>}
+          {!isInTutorialMode && (
+            <span className="header">{nPairsRated}/6 pairs rated</span>
+          )}
+          <div>
+            Displaying: {<ModelLozenge showFirstModel={showFirstModel} />}
+          </div>
         </div>
       )}
 
@@ -81,21 +86,14 @@ export const EvalHandler = () => {
           <div className="ui-container">
             <div className="select-container">
               <IQASelect
-                title={"Model A"}
-                fieldName="model_1"
-                value={firstRating}
-                setValue={setFirstRating}
-                disabled={!showFirstModel}
-              />
-              <IQASelect
-                title={"Model B"}
-                fieldName="model_2"
-                value={secondRating}
-                setValue={setSecondRating}
-                disabled={showFirstModel}
+                fieldName="rating"
+                value={rating}
+                setValue={setRating}
+                disabled={!seenBothModels}
               />
             </div>
-            <div className="button-container">
+            <div className="switch-container">
+              <ModelLozenge showFirstModel={showFirstModel} />
               <button
                 className="switch"
                 onClick={toggleModels}
@@ -104,15 +102,15 @@ export const EvalHandler = () => {
                 <FaRotate />
                 <span>Switch model</span>
               </button>
-              <button
-                className="next"
-                onClick={loadNextPair}
-                disabled={isLoading || !isRatingReady}
-              >
-                <FaAnglesRight />
-                <span>Load next</span>
-              </button>
             </div>
+            <button
+              className="next"
+              onClick={loadNextPair}
+              disabled={isLoading || !isRatingReady}
+            >
+              <FaAnglesRight />
+              <span>Load next</span>
+            </button>
           </div>
         </div>
       )}

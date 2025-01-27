@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useServiceContext } from "../context/service-context";
 import { Pair } from "../model/pair";
 import { RatingProviderImpl } from "../service/rating-provider/rating-provider";
+import { RatingType } from "../model/rating";
 
 export interface EvaluationHookResult {
   isLoading: boolean;
@@ -11,10 +12,8 @@ export interface EvaluationHookResult {
   secondPlyUrl: string | null;
   currentPair: Pair | null;
   isRatingReady: boolean;
-  firstRating: number | null;
-  setFirstRating: (firstRating: number) => void;
-  secondRating: number | null;
-  setSecondRating: (secondRating: number) => void;
+  rating: RatingType | null;
+  setRating: (rating: RatingType) => void;
   loadNextPair: () => void;
   isInTutorialMode: boolean;
   nPairsRated: number;
@@ -22,6 +21,7 @@ export interface EvaluationHookResult {
   restartEvaluation: () => Promise<void>;
   isCameraControlsExpanded: boolean;
   setIsCameraControlsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  seenBothModels: boolean;
 }
 
 export const useEvaluationHook: (
@@ -33,10 +33,10 @@ export const useEvaluationHook: (
   const [firstPlyUrl, setFirstPlyUrl] = useState<string | null>(null);
   const [secondPlyUrl, setSecondPlyUrl] = useState<string | null>(null);
 
-  const [firstRating, setFirstRating] = useState<number | null>(null);
-  const [secondRating, setSecondRating] = useState<number | null>(null);
+  const [rating, setRating] = useState<RatingType | null>(null);
   const [nPairsRated, setNPairsRated] = useState<number>(0);
   const [isFinished, setIsFinished] = useState<boolean>(false);
+  const [seenBothModels, setSeenBothModels] = useState<boolean>(false);
 
   const [isCameraControlsExpanded, setIsCameraControlsExpanded] =
     useState(true);
@@ -45,8 +45,7 @@ export const useEvaluationHook: (
   const ratingProvider = new RatingProviderImpl(
     evaluationService.getCurrentUserId(),
     currentPair?.id ?? null,
-    firstRating,
-    secondRating
+    rating
   );
   const isRatingReady = ratingProvider.isReady();
   const isInTutorialMode = evaluationService.isInTutorialMode();
@@ -75,15 +74,16 @@ export const useEvaluationHook: (
   return {
     isLoading,
     showFirstModel,
-    toggleModels: () => setShowFirstModel((prev) => !prev),
+    toggleModels: () => {
+      setSeenBothModels(true);
+      setShowFirstModel((prev) => !prev);
+    },
     firstPlyUrl,
     secondPlyUrl,
     currentPair,
     isRatingReady,
-    firstRating,
-    setFirstRating,
-    secondRating,
-    setSecondRating,
+    rating,
+    setRating,
     loadNextPair: async () => {
       setIsCameraControlsExpanded(false);
       setIsLoading(true);
@@ -103,8 +103,8 @@ export const useEvaluationHook: (
         }
 
         setIsLoading(false);
-        setFirstRating(null);
-        setSecondRating(null);
+        setRating(null);
+        setSeenBothModels(false);
         setShowFirstModel(true);
       }
     },
@@ -123,5 +123,6 @@ export const useEvaluationHook: (
     },
     isCameraControlsExpanded,
     setIsCameraControlsExpanded,
+    seenBothModels,
   };
 };

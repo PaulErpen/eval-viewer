@@ -1,4 +1,4 @@
-import { Rating } from "../../model/rating";
+import { Rating, RatingType } from "../../model/rating";
 
 export interface RatingProvider {
   isReady: () => boolean;
@@ -8,28 +8,20 @@ export interface RatingProvider {
 export class RatingProviderImpl implements RatingProvider {
   private userId: string | null;
   private pairId: string | null;
-  private firstRating: number | null;
-  private secondRating: number | null;
+  private rating: null | RatingType;
 
   constructor(
     userId: string | null,
     pairId: string | null,
-    firstRating: number | null,
-    secondRating: number | null
+    rating: RatingType | null
   ) {
     this.userId = userId;
     this.pairId = pairId;
-    this.firstRating = firstRating;
-    this.secondRating = secondRating;
+    this.rating = rating;
   }
 
   isReady = () => {
-    return (
-      this.userId != null &&
-      this.pairId != null &&
-      this.firstRating != null &&
-      this.secondRating != null
-    );
+    return this.userId != null && this.pairId != null && this.rating != null;
   };
 
   getRating = () => {
@@ -40,8 +32,7 @@ export class RatingProviderImpl implements RatingProvider {
       id: "",
       pairId: this.pairId ?? "",
       userId: this.userId ?? "",
-      rating1: this.firstRating ?? -1,
-      rating2: this.secondRating ?? -1,
+      rating: this.rating ?? "neither",
     };
   };
 }

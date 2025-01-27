@@ -1,10 +1,23 @@
 .iqa-select {
-    .iqa-select-title {
-        font-weight: bold;
-        font-size: larger;
-    }
+  .iqa-select-title {
+    font-size: medium;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
 
-    &.disabled {
-        color: rgb(175, 175, 175);
+  &.disabled > fieldset {
+    color: rgb(175, 175, 175);
+
+    .lozenge {
+      opacity: 0.7;
     }
+  }
+
+  fieldset div {
+    margin: 7px 0;
+  }
+
+  label {
+    margin-left: 4px;
+  }
 }

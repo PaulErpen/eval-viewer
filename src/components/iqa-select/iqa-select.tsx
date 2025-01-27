@@ -1,15 +1,16 @@
+import { RatingType } from "../../model/rating";
+import { Lozenge } from "../lozenge/lozenge";
+import { ModelLozenge } from "../lozenge/model-lozenge";
 import "./iqa-select.scss";
 
 export interface IQASelectProps {
-  title: string;
   fieldName: string;
-  value: number | null;
-  setValue: (value: number) => void;
+  value: RatingType | null;
+  setValue: (value: RatingType) => void;
   disabled: boolean;
 }
 
 export const IQASelect = ({
-  title,
   fieldName,
   value,
   setValue,
@@ -17,12 +18,12 @@ export const IQASelect = ({
 }: IQASelectProps) => {
   return (
     <div className={"iqa-select" + (disabled ? " disabled" : "")}>
-      <div className="iqa-select-title">{title}</div>
+      <div className="iqa-select-title">Which model do you prefer?</div>
       <fieldset>
         <div
           onClick={() => {
             if (!disabled) {
-              setValue(5);
+              setValue("first");
             }
           }}
         >
@@ -31,15 +32,17 @@ export const IQASelect = ({
             id="5"
             name={fieldName}
             value="Excellent"
-            checked={value === 5}
+            checked={value === "first"}
             disabled={disabled}
           />
-          <label htmlFor="Excellent">Excellent</label>
+          <label htmlFor="first">
+            <ModelLozenge showFirstModel={true} />
+          </label>
         </div>
         <div
           onClick={() => {
             if (!disabled) {
-              setValue(4);
+              setValue("neither");
             }
           }}
         >
@@ -47,16 +50,16 @@ export const IQASelect = ({
             type="radio"
             id="4"
             name={fieldName}
-            value="Good"
-            checked={value === 4}
+            value="neither"
+            checked={value === "neither"}
             disabled={disabled}
           />
-          <label htmlFor="Good">Good</label>
+          <label htmlFor="Good">Neither</label>
         </div>
         <div
           onClick={() => {
             if (!disabled) {
-              setValue(3);
+              setValue("second");
             }
           }}
         >
@@ -64,45 +67,13 @@ export const IQASelect = ({
             type="radio"
             id="3"
             name={fieldName}
-            value="Fair"
-            checked={value === 3}
+            value="second"
+            checked={value === "second"}
             disabled={disabled}
           />
-          <label htmlFor="Fair">Fair</label>
-        </div>
-        <div
-          onClick={() => {
-            if (!disabled) {
-              setValue(2);
-            }
-          }}
-        >
-          <input
-            type="radio"
-            id="2"
-            name={fieldName}
-            value="Poor"
-            checked={value === 2}
-            disabled={disabled}
-          />
-          <label htmlFor="Poor">Poor</label>
-        </div>
-        <div
-          onClick={() => {
-            if (!disabled) {
-              setValue(1);
-            }
-          }}
-        >
-          <input
-            type="radio"
-            id="1"
-            name={fieldName}
-            value="Bad"
-            checked={value === 1}
-            disabled={disabled}
-          />
-          <label htmlFor="Bad">Bad</label>
+          <label htmlFor="Fair">
+            <ModelLozenge showFirstModel={false} />
+          </label>
         </div>
       </fieldset>
     </div>

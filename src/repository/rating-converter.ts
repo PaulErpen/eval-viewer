@@ -14,8 +14,7 @@ export const ratingConverter: FirestoreDataConverter<Rating> = {
     return {
       user_id: modelObject.userId,
       pair_id: modelObject.pairId,
-      rating_1: modelObject.rating1,
-      rating_2: modelObject.rating2,
+      rating: modelObject.rating,
     };
   },
   fromFirestore: function (
@@ -27,8 +26,7 @@ export const ratingConverter: FirestoreDataConverter<Rating> = {
       id: snapshot.id,
       userId: data.user_id,
       pairId: data.pair_id,
-      rating1: data.rating_1,
-      rating2: data.rating_2,
+      rating: data.rating,
     };
   },
 };
