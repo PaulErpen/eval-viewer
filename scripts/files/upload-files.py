@@ -1,10 +1,10 @@
 import argparse
 import os
 from pathlib import Path
-from reduce import reduce_model_size
+from scripts.files.reduce import reduce_model_size
 from google.cloud import storage
 
-from registry import get_file_registry
+from scripts.files.registry import get_file_registry
 
 
 def compress_model(
