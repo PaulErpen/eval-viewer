@@ -2,7 +2,6 @@ from flask import Request
 from typing import List, Literal, NamedTuple, Union, Dict, Tuple
 from google.cloud import firestore
 from google.cloud.firestore_v1 import (
-    DocumentReference,
     FieldFilter,
     And,
     DocumentSnapshot,
