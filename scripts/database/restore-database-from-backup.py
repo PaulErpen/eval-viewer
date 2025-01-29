@@ -20,7 +20,7 @@ if __name__ == "__main__":
         "--filePath",
         "-f",
         type=str,
-        help="The file the ratings are gonna be exported to",
+        help="The file the ratings are stored in",
         required=True,
     )
 
@@ -30,14 +30,17 @@ if __name__ == "__main__":
 
     database = firestore.client()
 
-    ratingRef: CollectionReference = database.collection("rating")
+    for collection in database.collections():
+        for doc in collection.list_documents():
+            doc.delete()
 
-    ratingsDict = {}
+    with open(parsed_args.filePath, "r") as f:
+        dbDict = json.load(f)
 
-    for ratingDoc in ratingRef.list_documents():
-        ratingsDict[ratingDoc.id] = ratingDoc.get().to_dict()
+    for collection_id, collectionDict in dbDict.items():
+        collection: CollectionReference = database.collection(collection_id)
 
-    with open(parsed_args.filePath, "w") as f:
-        json.dump(ratingsDict, f, indent=4)
+        for id, item in collectionDict.items():
+            collection.document(id).set(item)
 
     firebase_admin.delete_app(app)

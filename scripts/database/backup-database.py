@@ -16,27 +16,31 @@ if __name__ == "__main__":
         required=True,
     )
 
+    parser.add_argument(
+        "--filePath",
+        "-f",
+        type=str,
+        help="The file the ratings are gonna be exported to",
+        required=True,
+    )
+
     parsed_args = parser.parse_args()
     cred = credentials.Certificate(parsed_args.serviceAccountKeyPath)
     app = firebase_admin.initialize_app(cred, {"databaseURL": "-default"})
 
     database = firestore.client()
 
-    ratingRef: CollectionReference = database.collection("rating")
+    dbDict = {}
 
-    for ratingDoc in ratingRef.list_documents():
-        snapshot = ratingDoc.get().to_dict()
-        first_rating = snapshot["rating_1"]
-        second_rating = snapshot["rating_2"]
-        updated_rating = "neither"
-        if first_rating > second_rating:
-            updated_rating = "first"
-        if second_rating > first_rating:
-            updated_rating = "second"
-        ratingDoc.update(
-            {
-                "rating": updated_rating,
-            }
-        )
+    for collection in database.collections():
+        collectionDict = {}
+
+        for doc in collection.list_documents():
+            collectionDict[doc.id] = doc.get().to_dict()
+
+        dbDict[collection.id] = collectionDict
+
+    with open(parsed_args.filePath, "w") as f:
+        json.dump(dbDict, f, indent=4)
 
     firebase_admin.delete_app(app)
