@@ -6,6 +6,7 @@ from google.cloud.firestore_v1 import (
     FieldFilter,
     And,
     DocumentSnapshot,
+    Or,
 )
 import numpy as np
 import asap_cpu
@@ -28,32 +29,26 @@ index_reversed = {idx: name for name, idx in index.items()}
 
 class Rating(NamedTuple):
     pair_id: str
-    model_1: str
-    model_2: str
+    technique_1: str
+    technique_2: str
     rating: Literal["first", "second", "neither"]
 
 
 class Pair(NamedTuple):
     id: str
-    model_1: str
-    model_2: str
+    technique_1: str
+    technique_2: str
 
     @classmethod
     def from_document_ref(cls, document_ref: DocumentSnapshot) -> "Pair":
         data = document_ref.to_dict()
-        return Pair(
-            document_ref.id,
-            data["model_1"].replace("splats/", "").split("-")[0],
-            data["model_2"].replace("splats/", "").split("-")[0],
-        )
+        return Pair(document_ref.id, data["technique_1"], data["technique_2"])
 
 
 def get_pairs(
     db: firestore.Client,
-    previous_dataset: str,
-    previous_previous_dataset: str,
-    previous_model_size: str,
-    previous_previous_model_size: str,
+    next_dataset: str,
+    next_size: str,
 ) -> List[Pair]:
     pair_collection = db.collection("pair")
 
@@ -62,44 +57,54 @@ def get_pairs(
             [
                 FieldFilter(
                     field_path="dataset_name",
-                    op_string="not-in",
-                    value=[previous_dataset, previous_previous_dataset],
+                    op_string="==",
+                    value=next_dataset,
+                ),
+                FieldFilter(
+                    field_path="size",
+                    op_string="==",
+                    value=next_size,
                 ),
             ]
         )
     ).get()
 
-    returned_pairs: List[Pair] = []
-
-    for ref in results:
-        pair = Pair.from_document_ref(ref)
-        if (
-            previous_model_size not in pair.model_1
-            and previous_previous_model_size not in pair.model_1
-        ):
-            returned_pairs.append(pair)
-
-    return returned_pairs
+    return [Pair.from_document_ref(ref) for ref in results]
 
 
-def get_ratings(db: firestore.Client, pairs: List[Pair]) -> List[Rating]:
+def get_ratings(
+    db: firestore.Client,
+    next_dataset: str,
+    next_size: str,
+) -> List[Rating]:
     rating_ref = db.collection("rating")
 
-    pair_idx = {pair.id: pair for pair in pairs}
-
     ratings_raw = rating_ref.where(
-        field_path="pair_id", op_string="in", value=[pair.id for pair in pairs]
+        filter=And(
+            [
+                FieldFilter(
+                    field_path="dataset",
+                    op_string="==",
+                    value=next_dataset,
+                ),
+                FieldFilter(
+                    field_path="size",
+                    op_string="==",
+                    value=next_size,
+                ),
+            ]
+        )
     ).get()
 
     ratings: List[Rating] = []
+
     for rating_ref in ratings_raw:
-        rating_data = rating_ref.get().to_dict()
-        pair = pair_idx[rating_data["pair_id"]]
+        rating_data = rating_ref.to_dict()
         ratings.append(
             Rating(
                 rating_data["pair_id"],
-                pair.model_1,
-                pair.model_2,
+                rating_data["technique_1"],
+                rating_data["technique_2"],
                 rating=rating_data["rating"],
             )
         )
@@ -111,13 +116,13 @@ def create_ratings_matrix(ratings: List[Rating]) -> np.ndarray:
     ratings_matrix = np.zeros((7, 7), dtype=np.unsignedinteger)
 
     for rating in ratings:
-        if rating["rating"] == "first":
-            ratings_matrix[index[rating.model_1]][index[rating.model_2]] = (
-                ratings_matrix[index[rating.model_1]][index[rating.model_2]] + 1
+        if rating.rating == "first":
+            ratings_matrix[index[rating.technique_1]][index[rating.technique_2]] = (
+                ratings_matrix[index[rating.technique_1]][index[rating.technique_2]] + 1
             )
-        if rating["rating"] == "second":
-            ratings_matrix[index[rating.model_2]][index[rating.model_1]] = (
-                ratings_matrix[index[rating.model_2]][index[rating.model_1]] + 1
+        if rating.rating == "second":
+            ratings_matrix[index[rating.technique_2]][index[rating.technique_1]] = (
+                ratings_matrix[index[rating.technique_2]][index[rating.technique_1]] + 1
             )
 
     return ratings_matrix
@@ -126,39 +131,68 @@ def create_ratings_matrix(ratings: List[Rating]) -> np.ndarray:
 def get_matching_database_pair_by_ids(
     pairs_to_compare: np.ndarray,
     db: firestore.Client,
-    previous_dataset: str,
-    previous_previous_dataset: str,
-    previous_high_detail: bool,
+    next_dataset: str,
+    next_size: str,
 ) -> List[Dict[str, str]]:
     return_pairs: List[Dict[str, str]] = []
-
-    possible_datasets = ["room", "truck", "stump"]
-    possible_datasets.remove(previous_dataset)
-    possible_datasets.remove(previous_previous_dataset)
-
-    if previous_high_detail:
-        possible_sizes = ["small", "medium"]
-    else:
-        possible_sizes = ["high", "extended"]
 
     for idx_1, idx_2 in pairs_to_compare:
         pair_collection = db.collection("pair")
 
-        name_options = [
-            f"splats/{index_reversed[idx_1]}-{possible_datasets[0]}-{possible_sizes[0]}-1.ksplat",
-            f"splats/{index_reversed[idx_1]}-{possible_datasets[0]}-{possible_sizes[1]}-1.ksplat",
-            f"splats/{index_reversed[idx_2]}-{possible_datasets[0]}-{possible_sizes[0]}-1.ksplat",
-            f"splats/{index_reversed[idx_2]}-{possible_datasets[0]}-{possible_sizes[1]}-1.ksplat",
-        ]
+        technique_1 = index_reversed[idx_1]
+        technique_2 = index_reversed[idx_2]
 
         found_pairs = pair_collection.where(
-            field_path="model_1",
-            op_string="in",
-            value=name_options,
+            filter=And(
+                [
+                    FieldFilter(
+                        field_path="dataset",
+                        op_string="==",
+                        value=next_dataset,
+                    ),
+                    FieldFilter(
+                        field_path="size",
+                        op_string="==",
+                        value=next_size,
+                    ),
+                    Or(
+                        [
+                            And(
+                                [
+                                    FieldFilter(
+                                        field_path="technique_1",
+                                        op_string="==",
+                                        value=technique_1,
+                                    ),
+                                    FieldFilter(
+                                        field_path="technique_2",
+                                        op_string="==",
+                                        value=technique_2,
+                                    ),
+                                ]
+                            ),
+                            And(
+                                [
+                                    FieldFilter(
+                                        field_path="technique_1",
+                                        op_string="==",
+                                        value=technique_2,
+                                    ),
+                                    FieldFilter(
+                                        field_path="technique_2",
+                                        op_string="==",
+                                        value=technique_1,
+                                    ),
+                                ]
+                            ),
+                        ]
+                    ),
+                ]
+            )
         ).get()
 
         for found_pair in found_pairs:
-            data = found_pair.get().to_dict()
+            data = found_pair.to_dict()
             return_pairs.append(
                 {
                     "id": found_pair.id,
@@ -172,9 +206,13 @@ def get_matching_database_pair_by_ids(
                     "aspect": data["aspect"],
                     "initialDistance": data["initial_distance"],
                     "datasetName": data["dataset_name"],
+                    "size": data["size"],
+                    "technique1": data["technique_1"],
+                    "technique2": data["technique_2"],
                 }
             )
-    return found_pairs
+
+    return return_pairs
 
 
 # also factor in the next size and dataset!
@@ -186,16 +224,12 @@ def get_next_pair(request: RequestType) -> ResponseType:
     previous_dataset = data["previous_dataset"]
     previous_previous_dataset = data["previous_previous_dataset"]
     previous_model_size = data["previous_model_size"]
-    previous_previous_model_size = data["previous_model_size"]
+    previous_previous_model_size = data["previous_previous_model_size"]
 
-    pairs = get_pairs(
-        db,
-        previous_dataset,
-        previous_previous_dataset,
-        previous_model_size,
-        previous_previous_model_size,
-    )
-    ratings = get_ratings(db, pairs)
+    next_dataset = get_next_dataset(previous_dataset, previous_previous_dataset)
+    next_size = get_next_size(previous_model_size, previous_previous_model_size)
+
+    ratings = get_ratings(db, next_dataset, next_size)
     ratings_matrix = create_ratings_matrix(ratings)
 
     # Create an object of class passing the number of conditions
@@ -204,11 +238,28 @@ def get_next_pair(request: RequestType) -> ResponseType:
     # Run active sampling algorithm on the matrix of comaprisons
     pairs_to_compare = asap.run_asap(ratings_matrix)
 
-    # Calling print
-    print(pairs_to_compare)
-
     return (
-        {"pairs": get_matching_database_pair_by_ids(pairs_to_compare)},
+        {
+            "pairs": get_matching_database_pair_by_ids(
+                pairs_to_compare, db, next_dataset, next_size
+            )
+        },
         200,
         {"Access-Control-Allow-Origin": "*"},
     )
+
+
+def get_next_dataset(previous_dataset: str, previous_previous_dataset: str) -> str:
+    possible_datasets = ["room", "truck", "stump"]
+    possible_datasets.remove(previous_dataset)
+    possible_datasets.remove(previous_previous_dataset)
+
+    return possible_datasets[0]
+
+
+def get_next_size(previous_size: str, previous_previous_size: str) -> str:
+    possible_sizes = ["low", "medium", "high"]
+    possible_sizes.remove(previous_size)
+    possible_sizes.remove(previous_previous_size)
+
+    return possible_sizes[0]
