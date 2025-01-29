@@ -25,3 +25,16 @@ gcloud functions deploy get_next_pair \
   --project gs-on-a-budget \
   --region=us-east1
 ```
+
+To test the cloud function you can use:
+
+```sh
+curl -X POST https://us-east1-gs-on-a-budget.cloudfunctions.net/get_next_pair \
+     -H "Content-Type: application/json" \
+     -d '{
+           "previous_dataset": "truck",
+            "previous_previous_dataset": "room",
+            "previous_model_size": "low",
+            "previous_previous_model_size": "medium"
+         }'
+```
