@@ -26,11 +26,13 @@ if __name__ == "__main__":
     for pairRef in database.collection("pair").list_documents():
         doc = pairRef.get()
         data = doc.to_dict()
-        model = data["model_1"].replace("splats/", "").split("-")[0]
+        technique_1 = data["model_1"].replace("splats/", "").split("-")[0]
+        technique_2 = data["model_2"].replace("splats/", "").split("-")[0]
         dataset = data["model_1"].replace("splats/", "").split("-")[1]
         size = data["model_1"].replace("splats/", "").split("-")[2]
 
-        data["model"] = model
+        data["technique_1"] = technique_1
+        data["technique_2"] = technique_2
         data["dataset"] = dataset
         data["size"] = size
 
@@ -39,7 +41,14 @@ if __name__ == "__main__":
         if size == "extended":
             pairRef.delete()
         else:
-            pairRef.update({"dataset": dataset, "size": size, "model": model})
+            pairRef.update(
+                {
+                    "dataset": dataset,
+                    "size": size,
+                    "technique_1": technique_1,
+                    "technique_2": technique_2,
+                }
+            )
 
     ratingRef: CollectionReference = database.collection("rating")
 
@@ -63,7 +72,8 @@ if __name__ == "__main__":
             ratingDoc.update(
                 {
                     "rating": updated_rating,
-                    "model": pair["model"],
+                    "technique_1": pair["technique_1"],
+                    "technique_2": pair["technique_2"],
                     "dataset": pair["dataset"],
                     "size": pair["size"],
                 }
