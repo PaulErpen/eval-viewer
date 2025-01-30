@@ -45,12 +45,22 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    background-color: white;
-    padding: 3px 9px 6px 9px;
-    border-radius: 4px;
 
     .header {
       font-size: 2rem;
+      background-color: white;
+      padding: 3px 9px 6px 9px;
+      border-radius: 4px;
+    }
+
+    .header-model-hint {
+      font-size: 7rem;
+      background: #ffffff54;
+      display: inline-block;
+      padding: 15px;
+      line-height: 6rem;
+      margin-top: 20px;
+      border-radius: 5px;
     }
   }
 

@@ -54,9 +54,11 @@ export const EvalHandler = () => {
           {!isInTutorialMode && (
             <span className="header">{nPairsRated}/6 pairs rated</span>
           )}
-          <div>
-            Displaying: {<ModelLozenge showFirstModel={showFirstModel} />}
-          </div>
+          <br/>
+          <span className="header-model-hint">
+            {showFirstModel && <span style={{ color: "#d21400" }}>A</span>}
+            {!showFirstModel && <span style={{ color: "#243cbf" }}>B</span>}
+          </span>
         </div>
       )}
 
