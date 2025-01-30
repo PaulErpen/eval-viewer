@@ -57,6 +57,7 @@ export class RatingProviderImpl implements RatingProvider {
       technique2: this.technique2 ?? "",
       size: this.size ?? "",
       rating: this.rating ?? "neither",
+      timestamp: new Date().toISOString(),
     };
   };
 }

@@ -9,4 +9,5 @@ export interface Rating {
   technique1: string;
   technique2: string;
   size: string;
+  timestamp: string;
 }

@@ -19,6 +19,7 @@ export const ratingConverter: FirestoreDataConverter<Rating> = {
       technique_1: modelObject.technique1,
       technique_2: modelObject.technique2,
       size: modelObject.size,
+      timestamp: modelObject.timestamp,
     };
   },
   fromFirestore: function (
@@ -35,6 +36,7 @@ export const ratingConverter: FirestoreDataConverter<Rating> = {
       technique1: data.technique_1,
       technique2: data.technique_2,
       size: data.size,
+      timestamp: data.timestamp,
     };
   },
 };
