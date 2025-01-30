@@ -74,6 +74,20 @@ export const EvalHandler = () => {
         </div>
       )}
 
+      {isLoading && (
+        <div className="loading-message-container">
+          <div className="loading-spinner-container">
+            <div className="loading-spinner">
+              <img src="/spinner.png" />
+            </div>
+          </div>
+          <div className="loading-message">
+            Determining optimal next comparison. <br />
+            Please wait...
+          </div>
+        </div>
+      )}
+
       {!isFinished && (
         <div className="ui-container-wrapper">
           <div className="camera-controls-wrapper">
@@ -84,14 +98,6 @@ export const EvalHandler = () => {
           </div>
 
           <div className="ui-container">
-            <div className="select-container">
-              <IQASelect
-                fieldName="rating"
-                value={rating}
-                setValue={setRating}
-                disabled={!seenBothModels}
-              />
-            </div>
             <div className="switch-container">
               <ModelLozenge showFirstModel={showFirstModel} />
               <button
@@ -102,6 +108,14 @@ export const EvalHandler = () => {
                 <FaRotate />
                 <span>Switch model</span>
               </button>
+            </div>
+            <div className="select-container">
+              <IQASelect
+                fieldName="rating"
+                value={rating}
+                setValue={setRating}
+                disabled={!seenBothModels || isLoading}
+              />
             </div>
             <button
               className="next"

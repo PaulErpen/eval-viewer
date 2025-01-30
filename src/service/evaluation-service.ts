@@ -87,7 +87,6 @@ export class EvaluationServiceImpl implements EvaluationService {
   };
 
   loadNextPair = () => {
-    const wasInTutorialMode = this.tutorial;
     this.tutorial = false;
     const userId = this.getCurrentUserId();
 
@@ -98,12 +97,20 @@ export class EvaluationServiceImpl implements EvaluationService {
     return new Promise<void>(async (resolve, reject) => {
       try {
         const [firstDataset, secondDataset] = fillPreviousDatasets(
-          !wasInTutorialMode ? this.currentPair.datasetName : null,
-          this.previousPair ? this.previousPair.datasetName : null
+          this.currentPair.datasetName !== "tutorial"
+            ? this.currentPair.datasetName
+            : null,
+          this.previousPair && this.previousPair.datasetName !== "tutorial"
+            ? this.previousPair.datasetName
+            : null
         );
         const [firstSize, secondSize] = fillPreviousSizes(
-          !wasInTutorialMode ? this.currentPair.size : null,
-          this.previousPair ? this.previousPair.size : null
+          this.currentPair.datasetName !== "tutorial"
+            ? this.currentPair.size
+            : null,
+          this.previousPair && this.previousPair.datasetName !== "tutorial"
+            ? this.previousPair.size
+            : null
         );
 
         const newPair = await this.repository.getNextPair(
