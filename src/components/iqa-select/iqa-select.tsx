@@ -1,5 +1,4 @@
 import { RatingType } from "../../model/rating";
-import { Lozenge } from "../lozenge/lozenge";
 import { ModelLozenge } from "../lozenge/model-lozenge";
 import "./iqa-select.scss";
 
