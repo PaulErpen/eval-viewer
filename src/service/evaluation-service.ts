@@ -16,16 +16,20 @@ export interface EvaluationService {
   getCurrentPair: () => Pair | null;
   loadNextPair: () => Promise<void>;
   submitRating: (rating: Rating) => Promise<void>;
-  getPlyUrls: () => Promise<{
-    plyUrl1: string;
-    plyUrl2: string;
-  }>;
+  getPlyUrls: () => Promise<
+    | {
+        plyUrl1: string;
+        plyUrl2: string;
+      }
+    | undefined
+  >;
+  reset: () => void;
 }
 
 export class EvaluationServiceImpl implements EvaluationService {
   private tutorial: boolean;
   repository: Repository;
-  currentPair: Pair;
+  currentPair: Pair | null;
   previousPair: Pair | null;
   getDownloadUrl: DownloadUrlProvider;
 
@@ -55,15 +59,21 @@ export class EvaluationServiceImpl implements EvaluationService {
   }
 
   getPlyUrls = async () => {
-    const [plyUrl1, plyUrl2] = await Promise.all([
-      this.getDownloadUrl(this.currentPair.model1),
-      this.getDownloadUrl(this.currentPair.model2),
-    ]);
+    if (this.currentPair == null) {
+      console.error("Cant load ply urls for non-existent pair!");
 
-    return {
-      plyUrl1,
-      plyUrl2,
-    };
+      return undefined;
+    } else {
+      const [plyUrl1, plyUrl2] = await Promise.all([
+        this.getDownloadUrl(this.currentPair.model1),
+        this.getDownloadUrl(this.currentPair.model2),
+      ]);
+
+      return {
+        plyUrl1,
+        plyUrl2,
+      };
+    }
   };
 
   isInTutorialMode = () => {
@@ -97,7 +107,7 @@ export class EvaluationServiceImpl implements EvaluationService {
     return new Promise<void>(async (resolve, reject) => {
       try {
         const [firstDataset, secondDataset] = fillPreviousDatasets(
-          this.currentPair.datasetName !== "tutorial"
+          this.currentPair && this.currentPair.datasetName !== "tutorial"
             ? this.currentPair.datasetName
             : null,
           this.previousPair && this.previousPair.datasetName !== "tutorial"
@@ -105,7 +115,7 @@ export class EvaluationServiceImpl implements EvaluationService {
             : null
         );
         const [firstSize, secondSize] = fillPreviousSizes(
-          this.currentPair.datasetName !== "tutorial"
+          this.currentPair && this.currentPair.datasetName !== "tutorial"
             ? this.currentPair.size
             : null,
           this.previousPair && this.previousPair.datasetName !== "tutorial"
@@ -132,6 +142,11 @@ export class EvaluationServiceImpl implements EvaluationService {
         reject();
       }
     });
+  };
+
+  reset = () => {
+    this.currentPair = null;
+    this.previousPair = null;
   };
 
   submitRating = (rating: Rating) => {

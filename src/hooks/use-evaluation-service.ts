@@ -49,7 +49,7 @@ export const useEvaluationHook: (
     currentPair?.datasetName ?? null,
     currentPair?.technique1 ?? null,
     currentPair?.technique2 ?? null,
-    currentPair?.size ?? null,
+    currentPair?.size ?? null
   );
   const isRatingReady = ratingProvider.isReady();
   const isInTutorialMode = evaluationService.isInTutorialMode();
@@ -64,13 +64,17 @@ export const useEvaluationHook: (
     loadNext();
   }
 
-  evaluationService.getPlyUrls().then(({ plyUrl1, plyUrl2 }) => {
-    if (!isLoading) {
-      if (plyUrl1 !== firstPlyUrl) {
-        setFirstPlyUrl(plyUrl1);
-      }
-      if (plyUrl2 !== secondPlyUrl) {
-        setSecondPlyUrl(plyUrl2);
+  evaluationService.getPlyUrls().then((result) => {
+    if (result) {
+      const { plyUrl1, plyUrl2 } = result;
+
+      if (!isLoading) {
+        if (plyUrl1 !== firstPlyUrl) {
+          setFirstPlyUrl(plyUrl1);
+        }
+        if (plyUrl2 !== secondPlyUrl) {
+          setSecondPlyUrl(plyUrl2);
+        }
       }
     }
   });
@@ -120,6 +124,7 @@ export const useEvaluationHook: (
         setIsLoading(true);
         setNPairsRated(0);
 
+        evaluationService.reset();
         await evaluationService.loadNextPair();
         setIsLoading(false);
         setIsFinished(false);
