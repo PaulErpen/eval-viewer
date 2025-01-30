@@ -23,7 +23,8 @@ gcloud functions deploy get_next_pair \
   --trigger-http \
   --allow-unauthenticated \
   --project gs-on-a-budget \
-  --region=us-east1
+  --region=us-east1 \
+  --memory=512M
 ```
 
 To test the cloud function you can use:
