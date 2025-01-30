@@ -3,6 +3,10 @@ import { Repository } from "../repository/repository";
 import { generateUUID } from "./helpers/generate-uuid";
 import { DownloadUrlProvider } from "./helpers/download-url-provider";
 import { Rating } from "../model/rating";
+import {
+  fillPreviousDatasets,
+  fillPreviousSizes,
+} from "./helpers/previous-values/previous-values";
 
 const USER_ID_LOCAL_STORAGE_KEY = "USER_ID_LOCAL_STORAGE_KEY";
 
@@ -80,7 +84,6 @@ export class EvaluationServiceImpl implements EvaluationService {
   };
 
   loadNextPair = () => {
-    const wasInTutorialMode = this.tutorial;
     this.tutorial = false;
     const userId = this.getCurrentUserId();
 
@@ -90,16 +93,22 @@ export class EvaluationServiceImpl implements EvaluationService {
 
     return new Promise<void>(async (resolve, reject) => {
       try {
-        const previousModelType = wasInTutorialMode
-          ? Math.random() <= 0.5
-          : this.currentPair.highDetail;
-        const newPair = await this.repository.getNextPair(
-          !previousModelType,
-          this.currentPair ? this.currentPair.datasetName : "",
-          this.previousPair
-            ? this.previousPair.datasetName
-            : this.currentPair.datasetName
+        const [firstDataset, secondDataset] = fillPreviousDatasets(
+          this.currentPair ? this.currentPair.datasetName : null,
+          this.previousPair ? this.previousPair.datasetName : null
         );
+        const [firstSize, secondSize] = fillPreviousSizes(
+          this.currentPair ? this.currentPair.size : null,
+          this.previousPair ? this.previousPair.size : null
+        );
+
+        const newPair = await this.repository.getNextPair(
+          firstDataset,
+          secondDataset,
+          firstSize,
+          secondSize
+        );
+
         this.previousPair = this.currentPair;
         this.currentPair = newPair;
 

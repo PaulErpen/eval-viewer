@@ -72,9 +72,9 @@ export class RepositoryImpl implements Repository {
 
     const body = await response.json();
 
-    const nPairs: number = body["pairs"].length();
+    const nPairs: number = body["pairs"].length;
 
-    return body["pairs"][Math.round(Math.random() * (nPairs - 1))];
+    return body["pairs"][Math.floor(Math.random() * nPairs)];
   };
 
   ratePair = async (_pair: Pair, _rating: Rating) => {};
