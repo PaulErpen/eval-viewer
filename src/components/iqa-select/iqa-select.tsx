@@ -1,3 +1,4 @@
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { RatingType } from "../../model/rating";
 import { ModelLozenge } from "../lozenge/model-lozenge";
 import "./iqa-select.scss";
@@ -7,6 +8,7 @@ export interface IQASelectProps {
   value: RatingType | null;
   setValue: (value: RatingType) => void;
   disabled: boolean;
+  showFirstModel: boolean;
 }
 
 export const IQASelect = ({
@@ -14,6 +16,7 @@ export const IQASelect = ({
   value,
   setValue,
   disabled,
+  showFirstModel,
 }: IQASelectProps) => {
   return (
     <div className={"iqa-select" + (disabled ? " disabled" : "")}>
@@ -36,6 +39,8 @@ export const IQASelect = ({
           />
           <label htmlFor="first">
             <ModelLozenge showFirstModel={true} />
+            {showFirstModel && <FaEye />}
+            {!showFirstModel && <FaEyeSlash />}
           </label>
         </div>
         <div
@@ -72,6 +77,8 @@ export const IQASelect = ({
           />
           <label htmlFor="Fair">
             <ModelLozenge showFirstModel={false} />
+            {!showFirstModel && <FaEye />}
+            {showFirstModel && <FaEyeSlash />}
           </label>
         </div>
       </fieldset>

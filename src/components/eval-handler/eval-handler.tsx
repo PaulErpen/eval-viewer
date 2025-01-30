@@ -115,6 +115,7 @@ export const EvalHandler = () => {
                 value={rating}
                 setValue={setRating}
                 disabled={!seenBothModels || isLoading}
+                showFirstModel={showFirstModel}
               />
             </div>
             <button
