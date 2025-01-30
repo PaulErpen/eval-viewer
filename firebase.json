@@ -33,12 +33,15 @@
     "public": "dist",
     "rewrites": [
       {
-        "source": "**",
+        "source": "/",
         "destination": "/index.html"
       },
       {
         "source": "/api/get_next_pair",
-        "destination": "https://us-east1-gs-on-a-budget.cloudfunctions.net/get_next_pair"
+        "function": {
+          "functionId": "get_next_pair",
+          "region": "us-east1"
+        }
       }
     ],
     "headers": [
