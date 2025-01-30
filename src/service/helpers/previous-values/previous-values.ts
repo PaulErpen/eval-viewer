@@ -5,6 +5,15 @@ const fillPreviousValues = (
   previousValues: Array<any>,
   allChoices: Array<any>
 ) => {
+  const errorValue = previousValues.find(
+    (value) => !allChoices.includes(value)
+  );
+  if (errorValue) {
+    throw new Error(
+      `Found value ${errorValue} which is not contained in ${allChoices}`
+    );
+  }
+
   if (previousValues.length == 2) {
     return [...previousValues];
   } else {

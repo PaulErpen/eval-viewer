@@ -29,6 +29,12 @@ export default defineConfig({
         secure: false,
         rewrite: (path) => path.replace(/^\/firebase-storage/, ""), // Remove /firebase-storage from the path
       },
+      "/api": {
+        target: "https://us-east1-gs-on-a-budget.cloudfunctions.net", // Firebase Storage URL
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ""), // Remove /api from the path
+      },
     },
   },
 });

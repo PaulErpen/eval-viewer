@@ -45,6 +45,9 @@ export class EvaluationServiceImpl implements EvaluationService {
       aspect: 2,
       initialDistance: 2,
       datasetName: "tutorial",
+      size: "",
+      technique1: "",
+      technique2: "",
     };
     this.previousPair = null;
 
@@ -84,6 +87,7 @@ export class EvaluationServiceImpl implements EvaluationService {
   };
 
   loadNextPair = () => {
+    const wasInTutorialMode = this.tutorial;
     this.tutorial = false;
     const userId = this.getCurrentUserId();
 
@@ -94,11 +98,11 @@ export class EvaluationServiceImpl implements EvaluationService {
     return new Promise<void>(async (resolve, reject) => {
       try {
         const [firstDataset, secondDataset] = fillPreviousDatasets(
-          this.currentPair ? this.currentPair.datasetName : null,
+          !wasInTutorialMode ? this.currentPair.datasetName : null,
           this.previousPair ? this.previousPair.datasetName : null
         );
         const [firstSize, secondSize] = fillPreviousSizes(
-          this.currentPair ? this.currentPair.size : null,
+          !wasInTutorialMode ? this.currentPair.size : null,
           this.previousPair ? this.previousPair.size : null
         );
 

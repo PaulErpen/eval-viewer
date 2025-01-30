@@ -35,6 +35,10 @@
       {
         "source": "**",
         "destination": "/index.html"
+      },
+      {
+        "source": "/api/get_next_pair",
+        "destination": "https://us-east1-gs-on-a-budget.cloudfunctions.net/get_next_pair"
       }
     ],
     "headers": [

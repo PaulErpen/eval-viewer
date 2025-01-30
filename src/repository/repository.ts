@@ -57,18 +57,16 @@ export class RepositoryImpl implements Repository {
     previousSize: string,
     previousPreviousSize: string
   ) => {
-    const response = await fetch(
-      "https://us-east1-gs-on-a-budget.cloudfunctions.net/get_next_pair",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          previous_dataset: previousDataset,
-          previous_previous_dataset: previousPreviousDataset,
-          previous_model_size: previousSize,
-          previous_previous_model_size: previousPreviousSize,
-        }),
-      }
-    );
+    const response = await fetch("/api/get_next_pair", {
+      method: "POST",
+      body: JSON.stringify({
+        previous_dataset: previousDataset,
+        previous_previous_dataset: previousPreviousDataset,
+        previous_model_size: previousSize,
+        previous_previous_model_size: previousPreviousSize,
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
 
     const body = await response.json();
 
