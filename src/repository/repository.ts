@@ -3,11 +3,6 @@ import {
   Firestore,
   getFirestore,
   collection,
-  orderBy,
-  getDocs,
-  query,
-  where,
-  limit,
   doc,
   setDoc,
   updateDoc,
@@ -20,9 +15,10 @@ import { ratingConverter } from "./rating-converter";
 
 export interface Repository {
   getNextPair: (
-    getHighDetailModel: boolean,
     previousDataset: string,
-    previousPreviousDataset: string
+    previousPreviousDataset: string,
+    previousSize: string,
+    previousPreviousSize: string
   ) => Promise<Pair>;
   ratePair: (pair: Pair, rating: Rating) => Promise<void>;
   submitRating: (rating: Rating) => Promise<void>;
@@ -56,34 +52,29 @@ export class RepositoryImpl implements Repository {
   };
 
   getNextPair = async (
-    getHighDetailModel: boolean,
     previousDataset: string,
-    previousPreviousDataset: string
+    previousPreviousDataset: string,
+    previousSize: string,
+    previousPreviousSize: string
   ) => {
-    const pairs = collection(this.db, "pair").withConverter(pairConverter);
-    const highDetailConstraint = where("high_detail", "==", getHighDetailModel);
-    const notInPreviousDataset = where("dataset_name", "not-in", [
-      previousDataset,
-      previousPreviousDataset,
-    ]);
-    const orderByRatings = orderBy("n_ratings", "asc");
-    const limit1 = limit(1);
-
-    const pairQuery = query(
-      pairs,
-      highDetailConstraint,
-      orderByRatings,
-      notInPreviousDataset,
-      limit1
+    const response = await fetch(
+      "https://us-east1-gs-on-a-budget.cloudfunctions.net/get_next_pair",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          previous_dataset: previousDataset,
+          previous_previous_dataset: previousPreviousDataset,
+          previous_model_size: previousSize,
+          previous_previous_model_size: previousPreviousSize,
+        }),
+      }
     );
 
-    const result = await getDocs(pairQuery);
+    const body = await response.json();
 
-    if (result.docs.length == 0) {
-      throw new Error("No docs found, this should not happen!");
-    }
+    const nPairs: number = body["pairs"].length();
 
-    return result.docs[0].data();
+    return body["pairs"][Math.round(Math.random() * (nPairs - 1))];
   };
 
   ratePair = async (_pair: Pair, _rating: Rating) => {};
