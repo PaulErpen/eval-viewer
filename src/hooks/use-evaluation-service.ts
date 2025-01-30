@@ -45,7 +45,11 @@ export const useEvaluationHook: (
   const ratingProvider = new RatingProviderImpl(
     evaluationService.getCurrentUserId(),
     currentPair?.id ?? null,
-    rating
+    rating,
+    currentPair?.datasetName ?? null,
+    currentPair?.technique1 ?? null,
+    currentPair?.technique2 ?? null,
+    currentPair?.size ?? null,
   );
   const isRatingReady = ratingProvider.isReady();
   const isInTutorialMode = evaluationService.isInTutorialMode();

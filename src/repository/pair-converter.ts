@@ -22,6 +22,9 @@ export const pairConverter: FirestoreDataConverter<Pair> = {
       aspect: modelObject.aspect,
       initial_distance: modelObject.initialDistance,
       dataset_name: modelObject.datasetName,
+      size: modelObject.size,
+      technique_1: modelObject.technique1,
+      technique_2: modelObject.technique2,
     };
   },
   fromFirestore: function (
@@ -41,6 +44,9 @@ export const pairConverter: FirestoreDataConverter<Pair> = {
       aspect: data.aspect,
       initialDistance: data.initial_distance,
       datasetName: data.dataset_name,
+      size: data.size,
+      technique1: data.technique_1,
+      technique2: data.technique_2,
     };
   },
 };

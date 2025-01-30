@@ -15,6 +15,10 @@ export const ratingConverter: FirestoreDataConverter<Rating> = {
       user_id: modelObject.userId,
       pair_id: modelObject.pairId,
       rating: modelObject.rating,
+      dataset: modelObject.dataset,
+      technique_1: modelObject.technique1,
+      technique_2: modelObject.technique2,
+      size: modelObject.size,
     };
   },
   fromFirestore: function (
@@ -27,6 +31,10 @@ export const ratingConverter: FirestoreDataConverter<Rating> = {
       userId: data.user_id,
       pairId: data.pair_id,
       rating: data.rating,
+      dataset: data.dataset,
+      technique1: data.technique_1,
+      technique2: data.technique_2,
+      size: data.size,
     };
   },
 };

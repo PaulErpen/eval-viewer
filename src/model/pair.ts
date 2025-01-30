@@ -10,4 +10,7 @@ export interface Pair {
   aspect: number;
   initialDistance: number;
   datasetName: string;
+  size: string;
+  technique1: string;
+  technique2: string;
 }
