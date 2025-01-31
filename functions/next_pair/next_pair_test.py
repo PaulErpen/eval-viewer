@@ -99,6 +99,23 @@ class TestNextPairCloudFunction(unittest.TestCase):
         for pair in response[0]["pairs"]:
             self.assertEqual(pair["size"], "low")
 
+    def test_given_empty_previous_dataset__when_executing_asap__then_return_valid_pairs(
+        self,
+    ) -> None:
+        request: RequestType = mock.MagicMock()
+        request.get_json = mock.Mock(
+            return_value={
+                "previous_dataset": "",
+                "previous_previous_dataset": "",
+                "previous_model_size": "",
+                "previous_previous_model_size": "",
+            }
+        )
+
+        response: ResponseType = get_next_pair(request)
+
+        self.assertEquals(len(response[0]["pairs"]), 6)
+
 
 if __name__ == "__main__":
     unittest.main()

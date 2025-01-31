@@ -1,3 +1,4 @@
+import datetime as dt
 from flask import Request
 from typing import List, Literal, NamedTuple, Union, Dict, Tuple
 from google.cloud import firestore
@@ -9,6 +10,7 @@ from google.cloud.firestore_v1 import (
 )
 import numpy as np
 import asap_cpu
+import pandas as pd
 
 # Type aliases for request and response
 RequestType = Request
@@ -214,6 +216,68 @@ def get_matching_database_pair_by_ids(
     return return_pairs
 
 
+def determine_high_priority_dataset_and_size(
+    db: firestore.Client, next_datasets: List[str], next_sizes: List[str]
+) -> Tuple[str, str]:
+    priority_cache_ref = db.collection("priority")
+
+    priority_cache = None
+
+    for doc in priority_cache_ref.list_documents():
+        priority_cache = doc.get().to_dict()
+
+    if priority_cache_ref is None or (
+        priority_cache is not None
+        and dt.datetime.fromisoformat(priority_cache["timestamp"]) - dt.datetime.now()
+        < dt.timedelta(minutes=5)
+    ):
+        pass
+    else:
+        rating_ref = db.collection("rating")
+
+        records = []
+
+        for rating_ref in rating_ref.list_documents():
+            rating = rating_ref.get()
+            rating_data = rating.to_dict()
+            records.append(
+                {
+                    "id": rating.id,
+                    "size": rating_data["size"],
+                    "dataset": rating_data["dataset"],
+                }
+            )
+
+        df_rating_counts = (
+            pd.DataFrame.from_records(records)
+            .groupby(["dataset", "size"])["id"]
+            .count()
+            .reset_index()
+            .sort_values("id")
+        )
+
+        priority_cache = {
+            "entries": [
+                {
+                    "dataset": row["dataset"],
+                    "size": row["size"],
+                    "count": row["id"],
+                }
+                for idx, row in df_rating_counts.iterrows()
+            ],
+            "timestamp": dt.datetime.now().isoformat(),
+        }
+
+        for doc in priority_cache_ref.list_documents():
+            doc.delete()
+
+        priority_cache_ref.add(priority_cache)
+
+    for entry in priority_cache["entries"]:
+        if entry["dataset"] in next_datasets and entry["size"] in next_sizes:
+            return entry["dataset"], entry["size"]
+
+
 # also factor in the next size and dataset!
 def get_next_pair(request: RequestType) -> ResponseType:
     db = firestore.Client(project="gs-on-a-budget")
@@ -225,8 +289,16 @@ def get_next_pair(request: RequestType) -> ResponseType:
     previous_model_size = data["previous_model_size"]
     previous_previous_model_size = data["previous_previous_model_size"]
 
-    next_dataset = get_next_dataset(previous_dataset, previous_previous_dataset)
-    next_size = get_next_size(previous_model_size, previous_previous_model_size)
+    next_datasets = get_next_possible_datasets(
+        previous_dataset, previous_previous_dataset
+    )
+    next_sizes = get_next_possible_sizes(
+        previous_model_size, previous_previous_model_size
+    )
+
+    next_dataset, next_size = determine_high_priority_dataset_and_size(
+        db, next_datasets, next_sizes
+    )
 
     ratings = get_ratings(db, next_dataset, next_size)
     ratings_matrix = create_ratings_matrix(ratings)
@@ -248,17 +320,25 @@ def get_next_pair(request: RequestType) -> ResponseType:
     )
 
 
-def get_next_dataset(previous_dataset: str, previous_previous_dataset: str) -> str:
+def get_next_possible_datasets(
+    previous_dataset: str, previous_previous_dataset: str
+) -> List[str]:
     possible_datasets = ["room", "truck", "stump"]
-    possible_datasets.remove(previous_dataset)
-    possible_datasets.remove(previous_previous_dataset)
+    if previous_dataset in possible_datasets:
+        possible_datasets.remove(previous_dataset)
+    if previous_previous_dataset in possible_datasets:
+        possible_datasets.remove(previous_previous_dataset)
 
-    return possible_datasets[0]
+    return possible_datasets
 
 
-def get_next_size(previous_size: str, previous_previous_size: str) -> str:
+def get_next_possible_sizes(
+    previous_size: str, previous_previous_size: str
+) -> List[str]:
     possible_sizes = ["low", "medium", "high"]
-    possible_sizes.remove(previous_size)
-    possible_sizes.remove(previous_previous_size)
+    if previous_size in possible_sizes:
+        possible_sizes.remove(previous_size)
+    if previous_previous_size in possible_sizes:
+        possible_sizes.remove(previous_previous_size)
 
-    return possible_sizes[0]
+    return possible_sizes
