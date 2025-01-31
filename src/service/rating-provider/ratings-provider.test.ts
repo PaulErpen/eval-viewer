@@ -44,7 +44,7 @@ describe("RatingService", () => {
       "size"
     );
 
-    const expectedRating: Rating = {
+    const expectedRating: Partial<Rating> = {
       id: "",
       pairId: PAIR_ID,
       userId: USER_ID,
