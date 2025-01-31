@@ -296,9 +296,12 @@ def get_next_pair(request: RequestType) -> ResponseType:
         previous_model_size, previous_previous_model_size
     )
 
-    next_dataset, next_size = determine_high_priority_dataset_and_size(
-        db, next_datasets, next_sizes
-    )
+    if len(next_datasets) == 1 and len(next_sizes) == 1:
+        next_dataset, next_size = next_datasets[0], next_sizes[0]
+    else:
+        next_dataset, next_size = determine_high_priority_dataset_and_size(
+            db, next_datasets, next_sizes
+        )
 
     ratings = get_ratings(db, next_dataset, next_size)
     ratings_matrix = create_ratings_matrix(ratings)
