@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useServiceContext } from "../context/service-context";
 import { Pair } from "../model/pair";
 import { RatingProviderImpl } from "../service/rating-provider/rating-provider";
@@ -40,6 +40,8 @@ export const useEvaluationHook: (
 
   const [isCameraControlsExpanded, setIsCameraControlsExpanded] =
     useState(true);
+
+  const pressedKeysRef = useRef<Set<string>>(new Set());
 
   const currentPair = evaluationService.getCurrentPair();
   const ratingProvider = new RatingProviderImpl(
@@ -96,6 +98,31 @@ export const useEvaluationHook: (
       window.removeEventListener("keydown", toggleOnSpacePressed);
     };
   }, [toggleModels]);
+
+  useEffect(() => {
+    const skipShortcut = (event: KeyboardEvent) => {
+      pressedKeysRef.current.add(event.key);
+
+      if (
+        pressedKeysRef.current.has("Alt") &&
+        pressedKeysRef.current.has("Control") &&
+        pressedKeysRef.current.has("p")
+      ) {
+        loadNext();
+      }
+    };
+    window.addEventListener("keydown", skipShortcut);
+
+    const removeKeys = (event: KeyboardEvent) => {
+      pressedKeysRef.current.delete(event.key);
+    };
+    window.addEventListener("keyup", removeKeys);
+
+    return () => {
+      window.removeEventListener("keydown", skipShortcut);
+      window.removeEventListener("keyup", removeKeys);
+    };
+  }, [loadNext]);
 
   return {
     isLoading,
