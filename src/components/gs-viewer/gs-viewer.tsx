@@ -21,6 +21,7 @@ export interface GSViewerProps {
   aspect: number;
   initialDistance: number;
   invertControls: boolean;
+  isFinished: boolean;
 }
 
 const resizeRendererToDisplaySize = (renderer: THREE.Renderer) => {
@@ -50,6 +51,7 @@ export const GSViewer = ({
   aspect,
   initialDistance,
   invertControls,
+  isFinished,
 }: GSViewerProps) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const plyPath1Ref = useRef<string | null>(plyPath1);
@@ -171,7 +173,10 @@ export const GSViewer = ({
       previousTime = currentTime;
 
       // Update camera gimbal center based on WASD input
-      if (moveDirection.x !== 0 || moveDirection.y !== 0) {
+      if (
+        renderer.domElement.dataset.isFinished === "false" &&
+        (moveDirection.x !== 0 || moveDirection.y !== 0)
+      ) {
         const forward = new THREE.Vector3();
         const right = new THREE.Vector3();
 
@@ -204,6 +209,7 @@ export const GSViewer = ({
         ref={setCanvas}
         data-show-first={showFirst}
         data-invert-controls={invertControls}
+        data-is-finished={isFinished}
       />
     </div>
   );

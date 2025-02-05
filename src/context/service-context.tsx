@@ -6,13 +6,16 @@ import {
 } from "../service/evaluation-service";
 import { RepositoryImpl } from "../repository/repository";
 import { provideDownloadUrl } from "./helpers/provide-download-url";
+import { FirebaseApp } from "firebase/app";
 
 export interface ServiceContext {
+  firebaseApp: FirebaseApp;
   evaluationService: EvaluationService;
 }
 
 const firebaseApp = initializeFirebase();
 const serviceContextInstance = {
+  firebaseApp,
   evaluationService: new EvaluationServiceImpl(
     new RepositoryImpl(firebaseApp),
     provideDownloadUrl

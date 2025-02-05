@@ -28,6 +28,7 @@ export const EvalHandler = () => {
     seenBothModels,
     invertControls,
     setInvertControls,
+    userId,
   } = useEvaluationHook(false);
 
   return (
@@ -49,6 +50,7 @@ export const EvalHandler = () => {
           aspect={currentPair ? currentPair.aspect : 1}
           initialDistance={currentPair ? currentPair.initialDistance : 1}
           invertControls={invertControls}
+          isFinished={isFinished}
         />
       )}
 
@@ -66,11 +68,12 @@ export const EvalHandler = () => {
         </div>
       )}
 
-      {isFinished && (
+      {true && (
         <FinishedMessage
           restartEvaluation={restartEvaluation}
           isFinished={isFinished}
           isLoading={isLoading}
+          userId={userId}
         />
       )}
 

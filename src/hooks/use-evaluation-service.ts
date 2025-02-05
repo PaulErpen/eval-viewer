@@ -24,6 +24,7 @@ export interface EvaluationHookResult {
   seenBothModels: boolean;
   invertControls: boolean;
   setInvertControls: React.Dispatch<React.SetStateAction<boolean>>;
+  userId: string | null;
 }
 
 export const useEvaluationHook: (
@@ -91,7 +92,7 @@ export const useEvaluationHook: (
 
   useEffect(() => {
     const toggleOnSpacePressed = (event: KeyboardEvent) => {
-      if (event.key == " ") {
+      if (event.key == " " && !isFinished) {
         toggleModels();
       }
     };
@@ -180,5 +181,6 @@ export const useEvaluationHook: (
     seenBothModels,
     invertControls,
     setInvertControls,
+    userId: evaluationService.getCurrentUserId(),
   };
 };

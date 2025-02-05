@@ -1,0 +1,40 @@
+.finished-message {
+  .fieldSet {
+    overflow: auto;
+    margin-bottom: 10px;
+
+    label {
+      text-align: right;
+      width: 35%;
+      display: block;
+      float: left;
+      padding-right: 11px;
+    }
+
+    & > * {
+      width: 60%;
+      display: block;
+      float: left;
+    }
+  }
+
+  .checkbox-fieldSet {
+    overflow: auto;
+    margin-bottom: 10px;
+
+    div {
+      text-align: right;
+      width: 35%;
+      display: block;
+      float: left;
+      padding-right: 11px;
+    }
+
+    label {
+      width: 60%;
+      display: block;
+      float: left;
+      text-align: left;
+    }
+  }
+}
