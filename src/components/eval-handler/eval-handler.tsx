@@ -5,6 +5,7 @@ import { useEvaluationHook } from "../../hooks/use-evaluation-service";
 import { FaAnglesRight, FaRotate } from "react-icons/fa6";
 import { CameraControlsPanel } from "../camera-controls-panel/camera-controls-panel";
 import { ModelLozenge } from "../lozenge/model-lozenge";
+import { FinishedMessage } from "../finished-message/finished-message";
 
 export const EvalHandler = () => {
   const {
@@ -66,17 +67,11 @@ export const EvalHandler = () => {
       )}
 
       {isFinished && (
-        <div className="finished-message">
-          <span>Thanks for participating in the evaluation ❤️</span>
-          <button
-            className="restart"
-            onClick={restartEvaluation}
-            disabled={!isFinished && !isLoading}
-          >
-            <FaRotate />
-            <span>Start new evaluation</span>
-          </button>
-        </div>
+        <FinishedMessage
+          restartEvaluation={restartEvaluation}
+          isFinished={isFinished}
+          isLoading={isLoading}
+        />
       )}
 
       {isLoading && (
