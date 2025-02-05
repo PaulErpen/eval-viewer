@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServiceContext } from "../context/service-context";
 import { Pair } from "../model/pair";
 import { RatingProviderImpl } from "../service/rating-provider/rating-provider";
@@ -79,13 +79,28 @@ export const useEvaluationHook: (
     }
   });
 
+  const toggleModels = () => {
+    setSeenBothModels(true);
+    setShowFirstModel((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const toggleOnSpacePressed = (event: KeyboardEvent) => {
+      if (event.key == " ") {
+        toggleModels();
+      }
+    };
+    window.addEventListener("keydown", toggleOnSpacePressed);
+
+    return () => {
+      window.removeEventListener("keydown", toggleOnSpacePressed);
+    };
+  }, [toggleModels]);
+
   return {
     isLoading,
     showFirstModel,
-    toggleModels: () => {
-      setSeenBothModels(true);
-      setShowFirstModel((prev) => !prev);
-    },
+    toggleModels,
     firstPlyUrl,
     secondPlyUrl,
     currentPair,

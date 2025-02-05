@@ -11,7 +11,7 @@ export const CameraControlsPanel = ({
   return (
     <div className="camera-controls-panel">
       <span>
-        <b>Camera Controls</b>
+        <b>Controls</b>
       </span>
       <br />
       {isExpanded && (
@@ -40,6 +40,12 @@ export const CameraControlsPanel = ({
               <img src="/scroll.png" />
             </div>
             <span>to zoom the camera</span>
+          </div>
+          <div>
+            <div className="img-wrapper">
+              <img src="/space.png" />
+            </div>
+            <span>to switch the models</span>
           </div>
         </>
       )}
