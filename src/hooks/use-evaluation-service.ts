@@ -22,6 +22,8 @@ export interface EvaluationHookResult {
   isCameraControlsExpanded: boolean;
   setIsCameraControlsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   seenBothModels: boolean;
+  invertControls: boolean;
+  setInvertControls: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const useEvaluationHook: (
@@ -37,6 +39,7 @@ export const useEvaluationHook: (
   const [nPairsRated, setNPairsRated] = useState<number>(0);
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [seenBothModels, setSeenBothModels] = useState<boolean>(false);
+  const [invertControls, setInvertControls] = useState<boolean>(false);
 
   const [isCameraControlsExpanded, setIsCameraControlsExpanded] =
     useState(true);
@@ -175,5 +178,7 @@ export const useEvaluationHook: (
     isCameraControlsExpanded,
     setIsCameraControlsExpanded,
     seenBothModels,
+    invertControls,
+    setInvertControls,
   };
 };

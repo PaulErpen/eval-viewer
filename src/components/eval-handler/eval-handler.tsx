@@ -25,6 +25,8 @@ export const EvalHandler = () => {
     isCameraControlsExpanded,
     setIsCameraControlsExpanded,
     seenBothModels,
+    invertControls,
+    setInvertControls,
   } = useEvaluationHook(false);
 
   return (
@@ -45,6 +47,7 @@ export const EvalHandler = () => {
           fovY={currentPair ? currentPair.fovY : 1}
           aspect={currentPair ? currentPair.aspect : 1}
           initialDistance={currentPair ? currentPair.initialDistance : 1}
+          invertControls={invertControls}
         />
       )}
 
@@ -54,7 +57,7 @@ export const EvalHandler = () => {
           {!isInTutorialMode && (
             <span className="header">{nPairsRated}/6 pairs rated</span>
           )}
-          <br/>
+          <br />
           <span className="header-model-hint">
             {showFirstModel && <span style={{ color: "#d21400" }}>A</span>}
             {!showFirstModel && <span style={{ color: "#243cbf" }}>B</span>}
@@ -96,6 +99,8 @@ export const EvalHandler = () => {
             <CameraControlsPanel
               isExpanded={isCameraControlsExpanded}
               setExpanded={setIsCameraControlsExpanded}
+              invertControls={invertControls}
+              setInvertControls={setInvertControls}
             />
           </div>
 

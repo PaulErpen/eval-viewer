@@ -20,6 +20,7 @@ export interface GSViewerProps {
   fovY: number;
   aspect: number;
   initialDistance: number;
+  invertControls: boolean;
 }
 
 const resizeRendererToDisplaySize = (renderer: THREE.Renderer) => {
@@ -48,6 +49,7 @@ export const GSViewer = ({
   fovY,
   aspect,
   initialDistance,
+  invertControls,
 }: GSViewerProps) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const plyPath1Ref = useRef<string | null>(plyPath1);
@@ -145,6 +147,12 @@ export const GSViewer = ({
     const render = (currentTime: number) => {
       requestAnimationFrame(render);
 
+      if (renderer.domElement.dataset.invertControls === "true") {
+        controls.rotateSpeed = -0.3;
+      } else {
+        controls.rotateSpeed = 1;
+      }
+
       if (renderer.domElement.dataset.showFirst === "true") {
         gsViewer1Ref.current.visible = true;
         gsViewer2Ref.current.visible = false;
@@ -192,7 +200,11 @@ export const GSViewer = ({
 
   return (
     <div className="viewer" data-model-path={plyPath1}>
-      <canvas ref={setCanvas} data-show-first={showFirst} />
+      <canvas
+        ref={setCanvas}
+        data-show-first={showFirst}
+        data-invert-controls={invertControls}
+      />
     </div>
   );
 };
