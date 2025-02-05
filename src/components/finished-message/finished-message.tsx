@@ -22,9 +22,9 @@ const nullUserSurvey: Nullable<UserSurvey> = {
   educationLevel: null,
   jobField: null,
   previousExperience3D: null,
-  colorBlindness: null,
-  visuallyImpaired: null,
-  freeTextFeedback: null,
+  colorBlindness: false,
+  visuallyImpaired: "",
+  freeTextFeedback: "",
 };
 
 export const FinishedMessage = ({
