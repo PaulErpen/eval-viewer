@@ -68,7 +68,7 @@ export const EvalHandler = () => {
         </div>
       )}
 
-      {true && (
+      {isFinished && (
         <FinishedMessage
           restartEvaluation={restartEvaluation}
           isFinished={isFinished}

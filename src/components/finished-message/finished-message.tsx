@@ -68,11 +68,19 @@ export const FinishedMessage = ({
     debouncedUpdate(newFormData);
   };
 
+  const formFinished = Object.values(userSurvey).every(
+    (value) => value !== null && value !== undefined
+  );
+
   return (
     <div className="finished-message">
-      <span>Thanks for participating in the evaluation ❤️</span>
+      <h2>Thank you for participating ❤️</h2>
       <br />
-      <span>Please provide some additional info for context.</span>
+      <span>Please fill in the details below.</span>
+      <br />
+      <span>All entered information is saved in real-time.</span>
+      <br />
+      <span></span>
 
       <div className="form">
         <div className="fieldSet">
@@ -204,7 +212,7 @@ export const FinishedMessage = ({
       <button
         className="restart"
         onClick={restartEvaluation}
-        disabled={!isFinished && !isLoading}
+        disabled={!isFinished || isLoading || !formFinished}
       >
         <FaRotate />
         <span>Start new evaluation</span>
