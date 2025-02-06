@@ -48,7 +48,6 @@ export const GSViewer = ({
   position_y,
   position_z,
   fovY,
-  aspect,
   initialDistance,
   invertControls,
   isFinished,
