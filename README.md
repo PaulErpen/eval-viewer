@@ -39,3 +39,22 @@ curl -X POST https://us-east1-gs-on-a-budget.cloudfunctions.net/get_next_pair \
             "previous_previous_model_size": "medium"
          }'
 ```
+
+To deploy the scheduled job use:
+
+```sh
+gcloud functions deploy update_priority --runtime python310 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --project gs-on-a-budget \
+  --region=us-east1 \
+  --memory=512M
+```
+
+Dont forget to actually schedule the job in the Google Cloud console.
+
+Test the job using:
+
+```sh
+curl https://us-east1-gs-on-a-budget.cloudfunctions.net/update_priority
+```
