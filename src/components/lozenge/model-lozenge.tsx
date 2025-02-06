@@ -7,7 +7,8 @@ export const ModelLozenge = ({
 }) => {
   return (
     <Lozenge color={showFirstModel ? "#d21400" : "#243cbf"}>
-      {showFirstModel ? "Model A" : "Model B"}
+      {showFirstModel && <span>Model&nbsp;A</span>}
+      {!showFirstModel && <span>Model&nbsp;B</span>}
     </Lozenge>
   );
 };
