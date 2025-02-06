@@ -1,0 +1,44 @@
+.tutorial-message-wrapper {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(38, 38, 38, 0.47);
+  top: 0;
+  left: 0;
+  z-index: 500000;
+
+  .tutorial-message-body {
+    background-color: white;
+    width: min(90%, 800px);
+    margin: 0 auto;
+    top: 50%;
+    position: relative;
+    transform: translateY(-65%);
+    padding: 18px 21px 26px 38px;
+    border-radius: 5px;
+
+    img {
+      width: 100%;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 11px;
+      right: 12px;
+
+      &:hover > svg {
+        color: rgb(105, 105, 105);
+      }
+    }
+
+    .begin-wrapper {
+      margin-top: 10px;
+
+      button {
+        margin: 0 auto;
+        padding-right: 13px;
+        padding-left: 13px;
+      }
+    }
+  }
+}

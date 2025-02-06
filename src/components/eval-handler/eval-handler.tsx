@@ -6,6 +6,7 @@ import { FaAnglesRight, FaRotate } from "react-icons/fa6";
 import { CameraControlsPanel } from "../camera-controls-panel/camera-controls-panel";
 import { ModelLozenge } from "../lozenge/model-lozenge";
 import { FinishedMessage } from "../finished-message/finished-message";
+import { TutorialMessage } from "../tutorial-message/tutorial-message";
 
 export const EvalHandler = () => {
   const {
@@ -53,6 +54,8 @@ export const EvalHandler = () => {
           isFinished={isFinished}
         />
       )}
+
+      <TutorialMessage />
 
       {!isFinished && (
         <div className="header-container">
