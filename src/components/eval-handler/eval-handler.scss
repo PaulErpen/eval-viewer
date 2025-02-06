@@ -120,6 +120,7 @@
     border-radius: 5px;
     display: flex;
     align-items: center;
+    z-index: 200;
 
     @keyframes loading {
       to {
