@@ -17,6 +17,10 @@
     padding: 18px 21px 26px 38px;
     border-radius: 5px;
 
+    @media only screen and (max-width: 960px) {
+      transform: translateY(-45%);
+    }
+
     img {
       width: 100%;
     }

@@ -6,6 +6,10 @@
   flex-direction: column;
   align-items: baseline;
 
+  @media only screen and (max-width: 960px) {
+    display: none;
+  }
+
   .img-wrapper {
     width: 90px;
 
