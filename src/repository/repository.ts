@@ -50,12 +50,10 @@ export class RepositoryImpl implements Repository {
     const response = await fetch("/api/get_next_pair", {
       method: "POST",
       body: JSON.stringify({
-        previousPairs: [
-          previousPairs.map((pair) => ({
-            dataset: pair.datasetName,
-            size: pair.size,
-          })),
-        ],
+        previousPairs: previousPairs.map((pair) => ({
+          dataset: pair.datasetName,
+          size: pair.size,
+        })),
       }),
       headers: { "Content-Type": "application/json" },
     });

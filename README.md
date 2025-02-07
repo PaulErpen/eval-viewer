@@ -40,6 +40,16 @@ curl -X POST https://us-east1-gs-on-a-budget.cloudfunctions.net/get_next_pair \
          }'
 ```
 
+or:
+
+```sh
+curl -X POST https://us-east1-gs-on-a-budget.cloudfunctions.net/get_next_pair \
+     -H "Content-Type: application/json" \
+     -d '{
+           "previousPairs": []
+         }'
+```
+
 To deploy the scheduled job use:
 
 ```sh
