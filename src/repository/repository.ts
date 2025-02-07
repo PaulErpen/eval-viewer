@@ -14,12 +14,7 @@ import { pairConverter } from "./pair-converter";
 import { ratingConverter } from "./rating-converter";
 
 export interface Repository {
-  getNextPair: (
-    previousDataset: string,
-    previousPreviousDataset: string,
-    previousSize: string,
-    previousPreviousSize: string
-  ) => Promise<Pair>;
+  getNextPair: (previousPairs: Array<Pair>) => Promise<Pair>;
   ratePair: (pair: Pair, rating: Rating) => Promise<void>;
   submitRating: (rating: Rating) => Promise<void>;
 }
@@ -51,19 +46,16 @@ export class RepositoryImpl implements Repository {
     return setDoc(ratingDoc, rating);
   };
 
-  getNextPair = async (
-    previousDataset: string,
-    previousPreviousDataset: string,
-    previousSize: string,
-    previousPreviousSize: string
-  ) => {
+  getNextPair = async (previousPairs: Array<Pair>) => {
     const response = await fetch("/api/get_next_pair", {
       method: "POST",
       body: JSON.stringify({
-        previous_dataset: previousDataset,
-        previous_previous_dataset: previousPreviousDataset,
-        previous_model_size: previousSize,
-        previous_previous_model_size: previousPreviousSize,
+        previousPairs: [
+          previousPairs.map((pair) => ({
+            dataset: pair.datasetName,
+            size: pair.size,
+          })),
+        ],
       }),
       headers: { "Content-Type": "application/json" },
     });

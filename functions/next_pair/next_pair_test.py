@@ -116,6 +116,55 @@ class TestNextPairCloudFunction(unittest.TestCase):
 
         self.assertEquals(len(response[0]["pairs"]), 6)
 
+    def test_given_an_empty_list_of_previous_pairs__when_executing_asap__then_return_valid_pairs(
+        self,
+    ) -> None:
+        request: RequestType = mock.MagicMock()
+        request.get_json = mock.Mock(return_value={"previousPairs": []})
+
+        response: ResponseType = get_next_pair(request)
+
+        self.assertEquals(len(response[0]["pairs"]), 6)
+
+    def test_given_an_single_item_list_of_previous_pairs__when_executing_asap__then_return_pairs_not_of_that_facet(
+        self,
+    ) -> None:
+        request: RequestType = mock.MagicMock()
+        request.get_json = mock.Mock(
+            return_value={"previousPairs": [{"dataset": "stump", "size": "low"}]}
+        )
+
+        response: ResponseType = get_next_pair(request)
+
+        for pair in response[0]["pairs"]:
+            self.assertNotEquals(pair["datasetName"], "stump")
+            self.assertNotEquals(pair["size"], "low")
+
+    def test_given_an_list_of_previous_pairs_with_all_but_one_facet__when_executing_asap__then_return_pairs_of_that_facet(
+        self,
+    ) -> None:
+        request: RequestType = mock.MagicMock()
+        request.get_json = mock.Mock(
+            return_value={
+                "previousPairs": [
+                    {"dataset": "stump", "size": "low"},
+                    {"dataset": "stump", "size": "medium"},
+                    {"dataset": "stump", "size": "high"},
+                    {"dataset": "room", "size": "low"},
+                    {"dataset": "room", "size": "medium"},
+                    {"dataset": "room", "size": "high"},
+                    {"dataset": "truck", "size": "low"},
+                    {"dataset": "truck", "size": "medium"},
+                ]
+            }
+        )
+
+        response: ResponseType = get_next_pair(request)
+
+        for pair in response[0]["pairs"]:
+            self.assertEqual(pair["datasetName"], "truck")
+            self.assertEqual(pair["size"], "high")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -26,7 +26,7 @@ export class EvaluationServiceImpl implements EvaluationService {
   private tutorial: boolean;
   repository: Repository;
   currentPair: Pair | null;
-  previousPair: Pair | null;
+  previousPairs: Array<Pair>;
   getDownloadUrl: DownloadUrlProvider;
 
   constructor(repository: Repository, getDownloadUrl: DownloadUrlProvider) {
@@ -49,7 +49,7 @@ export class EvaluationServiceImpl implements EvaluationService {
       technique1: "",
       technique2: "",
     };
-    this.previousPair = null;
+    this.previousPairs = [];
 
     this.createUserId();
   }
@@ -93,6 +93,10 @@ export class EvaluationServiceImpl implements EvaluationService {
   };
 
   loadNextPair = () => {
+    if (!this.tutorial && this.currentPair) {
+      this.previousPairs.push(this.currentPair);
+    }
+
     this.tutorial = false;
     const userId = this.getCurrentUserId();
 
@@ -102,15 +106,9 @@ export class EvaluationServiceImpl implements EvaluationService {
 
     return new Promise<void>(async (resolve, reject) => {
       try {
-        const newPair = await this.repository.getNextPair(
-          this.currentPair ? this.currentPair.datasetName : "",
-          this.previousPair ? this.previousPair.datasetName : "",
-          this.currentPair ? this.currentPair.size : "",
-          this.previousPair ? this.previousPair.size : ""
+        this.currentPair = await this.repository.getNextPair(
+          this.previousPairs
         );
-
-        this.previousPair = this.currentPair;
-        this.currentPair = newPair;
 
         console.log(`Model A: ${this.currentPair.model1}`);
         console.log(`Model B: ${this.currentPair.model2}`);
@@ -125,7 +123,7 @@ export class EvaluationServiceImpl implements EvaluationService {
 
   reset = () => {
     this.currentPair = null;
-    this.previousPair = null;
+    this.previousPairs = [];
   };
 
   submitRating = (rating: Rating) => {

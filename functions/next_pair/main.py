@@ -278,29 +278,57 @@ def determine_high_priority_dataset_and_size(
             return entry["dataset"], entry["size"]
 
 
+def pair_not_processed_yet(
+    entry: Dict[str, str], previousPairs: List[Dict[str, str]]
+) -> bool:
+    for pair in previousPairs:
+        if entry["dataset"] == pair["dataset"] and entry["size"] == pair["size"]:
+            return False
+    return True
+
+
+def get_high_priority_dataset_and_size_by_previous_pairs(
+    db: firestore.Client, previousPairs: List[Dict[str, str]]
+) -> Tuple[str, str]:
+    priority_cache_ref = db.collection("priority")
+
+    priority_cache = None
+
+    for doc in priority_cache_ref.list_documents():
+        priority_cache = doc.get().to_dict()
+
+    for entry in priority_cache["entries"]:
+        if pair_not_processed_yet(entry, previousPairs):
+            return entry["dataset"], entry["size"]
+
+
 # also factor in the next size and dataset!
 def get_next_pair(request: RequestType) -> ResponseType:
     db = firestore.Client(project="gs-on-a-budget")
 
     data = request.get_json(silent=True)
 
-    previous_dataset = data["previous_dataset"]
-    previous_previous_dataset = data["previous_previous_dataset"]
-    previous_model_size = data["previous_model_size"]
-    previous_previous_model_size = data["previous_previous_model_size"]
+    if "previous_dataset" in data:
+        previous_dataset = data["previous_dataset"]
+        previous_previous_dataset = data["previous_previous_dataset"]
+        previous_model_size = data["previous_model_size"]
+        previous_previous_model_size = data["previous_previous_model_size"]
 
-    next_datasets = get_next_possible_datasets(
-        previous_dataset, previous_previous_dataset
-    )
-    next_sizes = get_next_possible_sizes(
-        previous_model_size, previous_previous_model_size
-    )
-
-    if len(next_datasets) == 1 and len(next_sizes) == 1:
-        next_dataset, next_size = next_datasets[0], next_sizes[0]
+        next_datasets = get_next_possible_datasets(
+            previous_dataset, previous_previous_dataset
+        )
+        next_sizes = get_next_possible_sizes(
+            previous_model_size, previous_previous_model_size
+        )
+        if len(next_datasets) == 1 and len(next_sizes) == 1:
+            next_dataset, next_size = next_datasets[0], next_sizes[0]
+        else:
+            next_dataset, next_size = determine_high_priority_dataset_and_size(
+                db, next_datasets, next_sizes
+            )
     else:
-        next_dataset, next_size = determine_high_priority_dataset_and_size(
-            db, next_datasets, next_sizes
+        next_dataset, next_size = get_high_priority_dataset_and_size_by_previous_pairs(
+            db, data["previousPairs"]
         )
 
     ratings = get_ratings(db, next_dataset, next_size)
