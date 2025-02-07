@@ -51,6 +51,7 @@ export const GSViewer = ({
   initialDistance,
   invertControls,
   isFinished,
+  aspect
 }: GSViewerProps) => {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const plyPath1Ref = useRef<string | null>(plyPath1);
@@ -79,7 +80,7 @@ export const GSViewer = ({
     });
     const camera = new THREE.PerspectiveCamera(
       fovY,
-      canvas.clientWidth / canvas.clientHeight,
+      aspect,
       0.5,
       500
     );
