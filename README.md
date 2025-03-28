@@ -1,6 +1,19 @@
-# Evaluation viewer
+# GS on a Budget - Evaluation Viewer
 
-To make cors work locally I used:
+This repository implements the custom evaluation tool
+used for surveying subjective quality of Gaussian Splatting models for the masters thesis "Gaussians on a Budget - Surveying subjective and objective indicators for Gaussian Splatting heuristics".
+
+A working demo of the tool can be found [here](https://gs-on-a-budget.firebaseapp.com/).
+
+## Running locally
+
+To run the frontend locally use:
+
+```sh
+npm run dev
+```
+
+To make cors work locally use:
 
 ```sh
 sudo snap install google-cloud-cli --classic
@@ -8,12 +21,26 @@ gcloud auth login
 gsutil cors set cors.json gs://gs-on-a-budget.firebasestorage.app
 ```
 
+The frontend depends on the `next_pair` cloud function,
+which has to be deployed for the application to work.
+
+## Deployment
+
 To deploy the frontend and firebase config use:
 
 ```sh
 npm run build
 firebase deploy
 ```
+
+### Cloud Functions
+
+There are two cloud functions that are critical to the functioning of this application.
+The `next_pair` function determines the next comparison pair that is presented to participants.
+The `update_priority` function is called at regular intervals by a scheduled job.
+It creates a cached data structure to aggregate rating counts and speed up the next pair computation.
+
+### `next_pair` function
 
 To deploy the python cloud-function use:
 
@@ -50,7 +77,10 @@ curl -X POST https://us-east1-gs-on-a-budget.cloudfunctions.net/get_next_pair \
          }'
 ```
 
-To deploy the scheduled job use:
+
+### `update_priority` function
+
+To deploy the function use:
 
 ```sh
 gcloud functions deploy update_priority --runtime python310 \
@@ -63,7 +93,7 @@ gcloud functions deploy update_priority --runtime python310 \
 
 Dont forget to actually schedule the job in the Google Cloud console.
 
-Test the job using:
+Test the function using:
 
 ```sh
 curl https://us-east1-gs-on-a-budget.cloudfunctions.net/update_priority
